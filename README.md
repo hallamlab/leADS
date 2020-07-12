@@ -119,7 +119,7 @@ where *--pathway-report* enables to generate a detailed report for pathways for 
 
 ## Citing
 If you find *leADS* useful in your research, please consider citing the following paper:
-- **[TO BE ADDED]**.
+- M. A. Basher, Abdur Rahman and Hallam, Steven J.. **"Multi-label Pathway Prediction based on Active Dataset Subsampling."**, [TO BE ADDED].
 
 ## Contact
 For any inquiries, please contact: [arbasher@alumni.ubc.ca](mailto:arbasher@alumni.ubc.ca)
