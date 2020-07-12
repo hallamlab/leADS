@@ -18,7 +18,7 @@ Basically, *leADS* requires following packages:
 
 
 ## Experimental Objects and Test Samples
-Please download the following files from [Zenodo](https://zenodo.org/record/3711138#.Xn2fgXVKjeQ). 
+Please download the following files from [Zenodo](https://zenodo.org/record/3940706#.Xwtb7nVKjeQ). 
 - The link contains the following preprocessed files:
     - "biocyc.pkl": an object containing the preprocessed MetaCyc database.
     - "pathway2ec.pkl": a matrix representing Pathway-EC association of size 3650 x 2526.
