@@ -1,5 +1,5 @@
 __author__ = "Abdurrahman M. A. Basher"
-__date__ = '04/06/2020'
+__date__ = '12/07/2020'
 __copyright__ = "Copyright 2020, The Hallam Lab"
 __license__ = "GPL"
 __version__ = "1.0"
@@ -98,7 +98,7 @@ def __internal_args(parse_args):
     ###***************************        Training arguments        ***************************###
 
     arg.train = parse_args.train
-    arg.train_labels = parse_args.train_labels
+    arg.train_labels = True
     arg.fit_intercept = parse_args.fit_intercept
     arg.train_selected_sample = parse_args.train_selected_sample
     arg.ssample_input_size = parse_args.ssample_input_size
@@ -154,9 +154,9 @@ def __internal_args(parse_args):
     if parse_args.no_build_features:
         arg.build_features = False
     arg.plot = parse_args.plot
-    arg.pred_bags = parse_args.pred_bags
-    arg.pred_labels = parse_args.pred_labels
-    arg.build_up = parse_args.build_up
+    arg.pred_bags = False
+    arg.pred_labels = True
+    arg.build_up = False
     arg.decision_threshold = parse_args.decision_threshold
     arg.soft_voting = parse_args.soft_voting
     arg.pref_rank = parse_args.pref_rank
@@ -359,14 +359,6 @@ def parse_command_line():
                              'be set between (0.5, 1.0] to guarantee asymptotic convergence. (default value: 0.7).')
     parser.add_argument('--delay', type=float, default=1.,
                         help='Delay factor down weights early iterations. (default value: 0.9).')
-    parser.add_argument('--train-labels', action='store_true', default=False,
-                        help='Whether to train labels only. (default value: False).')
-    parser.add_argument('--pred-bags', action='store_true', default=False,
-                        help='Whether to predict bags. (default value: False).')
-    parser.add_argument('--pred-labels', action='store_true', default=False,
-                        help='Whether to predict labels. (default value: False).')
-    parser.add_argument('--build-up', action='store_true', default=False,
-                        help='Whether to predict labels based on bags or not. (default value: False).')
     parser.add_argument('--soft-voting', action='store_true', default=False,
                         help='Whether to predict labels based on the calibrated sums of the '
                              'predicted probabilities from an ensemble. (default value: False).')

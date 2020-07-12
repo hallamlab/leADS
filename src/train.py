@@ -142,19 +142,6 @@ def __train(arg):
         bags_labels = None
         label_features = None
         centroids = None
-        if not arg.train_labels:
-            y_Bags = load_data(file_name=arg.yB_name,
-                               load_path=arg.dspath, tag="B")
-            bags_labels = load_data(file_name=arg.bags_labels, load_path=arg.dspath,
-                                    tag="bags_labels with associated pathways")
-            # TODO: comment below
-            # label_features = np.load(file=os.path.join(arg.dspath, arg.features_name))
-            # label_features = label_features[label_features.files[0]]
-            ###
-            label_features = load_data(
-                file_name=arg.features_name, load_path=arg.dspath, tag="features")
-            centroids = np.load(file=os.path.join(arg.dspath, arg.centroids))
-            centroids = centroids[centroids.files[0]]
         A = None
         if arg.fuse_weight:
             A = load_item_features(file_name=os.path.join(arg.ospath, arg.similarity_name),
@@ -166,19 +153,8 @@ def __train(arg):
                 sample_ids = np.array(sample_ids)
                 X = X[sample_ids, :]
                 y = y[sample_ids, :]
-                if not arg.train_labels:
-                    y_Bags = y_Bags[sample_ids, :]
             else:
                 print('\t\t No sample ids file is provided...')
-
-        # TODO: delete below
-        # from skmultilearn.dataset import load_dataset
-        # X, y, _, _ = load_dataset('emotions', 'train')
-        # sample = 500
-        # X = X[:sample, ]
-        # y = y[:sample, ]
-        # y_Bags = y_Bags[:sample, ]
-        ###
         model = leADS(alpha=arg.alpha, binarize_input_feature=arg.binarize_input_feature,
                       normalize_input_feature=arg.normalize_input_feature,
                       use_external_features=arg.use_external_features, cutting_point=arg.cutting_point,
@@ -202,17 +178,6 @@ def __train(arg):
         model.fit(X=X, y=y, y_Bag=y_Bags, bags_labels=bags_labels, label_features=label_features, centroids=centroids,
                   A=A, model_name=arg.model_name, model_path=arg.mdpath, result_path=arg.rspath,
                   display_params=display_params)
-        # X, y, _, _ = load_dataset('emotions', 'test')
-        # _, y_pred = model.predict(X=X, estimate_prob=arg.estimate_prob, pred_bags=arg.pred_bags,
-        #                           pred_labels=arg.pred_labels, build_up=arg.build_up, cal_average=arg.cal_average,
-        #                           apply_t_criterion=arg.apply_tcriterion, adaptive_beta=arg.adaptive_beta,
-        #                           decision_threshold=arg.decision_threshold, batch_size=arg.batch,
-        #                           num_jobs=arg.num_jobs)
-        # from sklearn.metrics import f1_score, accuracy_score, hamming_loss,confusion_matrix
-        # t = f1_score(y.toarray(), y_pred, average="samples")
-        # t = accuracy_score(y.toarray(), y_pred)
-        # t = hamming_loss(y.toarray(), y_pred)
-        # tn, fp, fn, tp = confusion_matrix(y.toarray().flatten(), y_pred.flatten()).ravel()
 
     ##########################################################################################################
     ######################                     EVALUATE USING leADS                      ######################
@@ -230,28 +195,12 @@ def __train(arg):
         centroids = None
         if not arg.pred_bags:
             y = load_data(file_name=arg.y_name, load_path=arg.dspath, tag="y")
-        if arg.pred_bags:
-            y_Bags = load_data(file_name=arg.yB_name,
-                               load_path=arg.dspath, tag="B")
-
+ 
         # load model
         model = load_data(file_name=arg.model_name + '.pkl',
                           load_path=arg.mdpath, tag='leADS')
 
-        if model.learn_bags:
-            bags_labels = load_data(file_name=arg.bags_labels, load_path=arg.dspath,
-                                    tag="bags_labels with associated pathways")
-        if model.label_uncertainty_type == "dependent":
-            # TODO: comment below
-            # label_features = np.load(file=os.path.join(arg.dspath, arg.features_name))
-            # label_features = label_features[label_features.files[0]]
-            ###
-            label_features = load_data(
-                file_name=arg.features_name, load_path=arg.dspath, tag="features")
-            centroids = np.load(file=os.path.join(arg.dspath, arg.centroids))
-            centroids = centroids[centroids.files[0]]
-
-        # labels prediction score
+         # labels prediction score
         y_pred_Bags, y_pred = model.predict(X=X, bags_labels=bags_labels, label_features=label_features,
                                             centroids=centroids,
                                             estimate_prob=arg.estimate_prob, pred_bags=arg.pred_bags,
@@ -263,9 +212,6 @@ def __train(arg):
                                             num_jobs=arg.num_jobs)
 
         file_name = arg.file_name + '_scores.txt'
-        if arg.pred_bags:
-            score(y_true=y_Bags.toarray(), y_pred=y_pred_Bags.toarray(), item_lst=['biocyc_bags'],
-                  six_db=False, top_k=arg.psp_k, mode='a', file_name=file_name, save_path=arg.rspath)
         if arg.pred_labels:
             score(y_true=y.toarray(), y_pred=y_pred.toarray(), item_lst=['biocyc'], six_db=False,
                   top_k=arg.psp_k, mode='a', file_name=file_name, save_path=arg.rspath)
@@ -346,21 +292,6 @@ def __train(arg):
         model = load_data(file_name=arg.model_name + '.pkl',
                           load_path=arg.mdpath, tag='leADS')
 
-        if model.learn_bags:
-            bags_labels = load_data(file_name=arg.bags_labels, load_path=arg.dspath,
-                                    tag="bags_labels with associated pathways")
-        if model.label_uncertainty_type == "dependent":
-            # TODO: comment below
-            label_features = np.load(
-                file=os.path.join(arg.dspath, arg.features_name))
-            label_features = label_features[label_features.files[0]]
-            ##
-            label_features = load_data(
-                file_name=arg.features_name, load_path=arg.dspath, tag="features")
-            centroids = np.load(file=os.path.join(arg.dspath, arg.centroids))
-            centroids = centroids[centroids.files[0]]
-
-        # TODO: comment below
         # model.get_informative_points(X=X)
         # predict
         y_pred_Bags, y_pred = model.predict(X=X, bags_labels=bags_labels, label_features=label_features,
@@ -396,12 +327,6 @@ def __train(arg):
                 arg.file_name + '_leads_y.pkl'))
             save_data(data=y_pred, file_name=arg.file_name + "_leads_y.pkl", save_path=arg.dspath,
                       mode="wb", print_tag=False)
-            if arg.pred_bags:
-                print('\t>> Storing predictions (bag index) to: {0:s}'.format(
-                    arg.file_name + '_leads_yBags.pkl'))
-                save_data(data=y_pred_Bags, file_name=arg.file_name + "_leads_yBags.pkl", save_path=arg.dspath,
-                          mode="wb", print_tag=False)
-
 
 def train(arg):
     try:
