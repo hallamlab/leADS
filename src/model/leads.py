@@ -593,24 +593,6 @@ class leADS:
         parallel = Parallel(n_jobs=self.num_jobs, verbose=max(0, self.verbose - 1))
         for model_idx in np.arange(self.num_models):
             samples = model_sample_idx[model_idx]
-            # samples = np.unique(np.concatenate((model_sample_idx[model_idx], selected_samples))).astype(np.int)
-            # size_x = int(np.ceil(X.shape[0] / self.num_models * self.subsample_input_size))
-            # if self.calc_ads:
-            # if len(selected_samples) > 0:
-            # if size_x - len(selected_samples) > 0:
-            # selected_samples = np.random.choice(a=selected_samples,
-            # size=int(len(selected_samples) * self.ads_percent),
-            # replace=False)
-            # size_x -= len(selected_samples)
-            # samples = samples[np.setdiff1d(samples, selected_samples)]
-
-            # tmp_idx = samples
-            # if len(samples) >= size_x:
-            # if self.calc_ads and len(selected_samples) > 0:
-            # tmp_idx = np.random.choice(a=samples, size=size_x, replace=False)
-            # tmp_idx = np.concatenate((tmp_idx, selected_samples)).astype(np.int)
-            # else:
-            # tmp_idx = np.random.choice(a=samples, size=size_x, replace=False)
             X_tmp = X[samples]
             y_tmp = y[samples]
             samples_idx.append(samples)
