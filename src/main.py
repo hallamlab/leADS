@@ -78,7 +78,6 @@ def __internal_args(parse_args):
     arg.bags_labels = parse_args.bags_labels
     arg.centroids = parse_args.centroids
     arg.similarity_name = parse_args.similarity_name
-    arg.vocab_name = parse_args.vocab_name
     arg.file_name = parse_args.file_name
     arg.samples_ids = parse_args.samples_ids
     arg.model_name = parse_args.model_name
@@ -231,8 +230,6 @@ def parse_command_line():
                         help='The bags to labels grouping file name. (default value: "biocyc_bag_pathway.pkl")')
     parser.add_argument('--similarity-name', type=str, default='pathway_similarity_cos.pkl',
                         help='The labels similarity file name. (default value: "pathway_similarity_cos.pkl")')
-    parser.add_argument('--vocab-name', type=str, default='vocab_biocyc.pkl',
-                        help='The vocab file name. (default value: "vocab_biocyc.pkl")')
     parser.add_argument('--file-name', type=str, default='SAG',
                         help='The file name to save an object. (default value: "biocyc")')
     parser.add_argument('--model-name', type=str, default='leADS',
