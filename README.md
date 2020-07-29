@@ -21,30 +21,30 @@ Basically, *leADS* requires following packages:
 Please download the following files from [Zenodo](https://zenodo.org/record/3940706#.Xwtb7nVKjeQ). 
 - The link contains the following preprocessed files:
     - "biocyc.pkl": an object containing the preprocessed MetaCyc database.
-    - "pathway2ec.pkl": a matrix representing Pathway-EC association of size 3650 x 2526.
+    - "pathway2ec.pkl": a matrix representing Pathway-EC association of size (3650, 2526).
     - "pathway2ec_idx.pkl": the pathway2ec association indices.                        
     - "hin.pkl": a sample of heterogeneous information network. 
-    - "pathway2vec_embeddings.npz": a sample of embeddings (nodes x dimension size). Based on your tests, you need to generate features using [pathway2vec](https://github.com/hallamlab/pathway2vec).
+    - "pathway2vec_embeddings.npz": a sample of embeddings (nodes, dimension size). Based on your tests, you need to generate features using [pathway2vec](https://github.com/hallamlab/pathway2vec).
 - We also provided pretrained models and samples for testing:
-    - "golden_X.pkl": Golden dataset of size 63 x 3650. First six examples correspond to: AraCyc, EcoCyc, HumanCyc, LeishCyc, TrypanoCyc, and YeastCyc.
-    - "golden_Xe.pkl": Golden dataset of size 63 x 3778. First six examples correspond to: AraCyc, EcoCyc, HumanCyc, LeishCyc, TrypanoCyc, and YeastCyc.
-    - "golden_y.pkl": Golden dataset of size 63 x 2526. First six examples correspond pathways to: AraCyc, EcoCyc, HumanCyc, LeishCyc, TrypanoCyc, and YeastCyc.
-    - "symbionts_X.pkl": Symbiont dataset of size 3 x 3650.
-    - "symbionts_Xe.pkl": Symbiont dataset of size 3 x 3778.
-    - "symbionts_y.pkl": Symbiont dataset of size 3 x 2526.
-    - "cami_X.pkl": CAMI dataset of size 40 x 3650.
-    - "cami_Xe.pkl": CAMI dataset of size 40 x 3778.
-    - "cami_y.pkl": CAMI dataset of size 40 x 2526.
-    - "hots_4_X.pkl": HOT metagenomics dataset of size 6 x 3650.
-    - "hots_4_Xe.pkl": HOT metagenomics dataset of size 6 x 3778.
-    - "hots_4_y.pkl": HOT metagenomics dataset of size 6 x 2526.
-    - "biocyc21_X.pkl": BioCyc (v21 tier 2 \& 3) dataset of size 9429 x 3650.
-    - "biocyc21_Xe.pkl": BioCyc (v21 tier 2 \& 3) dataset of size 9429 x 3778.
-    - "biocyc21_y.pkl": BioCyc (v21 tier 2 \& 3) dataset of size 9429 x 2526.
-    - "delicious_train_X.pkl": Delicious training X dataset of size 12920 x 500.
-    - "delicious_test_X.pkl": Delicious test X dataset of size 3185 x 500.
-    - "delicious_train_y.pkl": Delicious training Y dataset of size 12920 x 983.
-    - "delicious_test_y.pkl": Delicious test Y dataset of size 3185 x 983.
+    - "golden_X.pkl": Golden dataset of size (63, 3650). First six examples correspond to: AraCyc, EcoCyc, HumanCyc, LeishCyc, TrypanoCyc, and YeastCyc.
+    - "golden_Xe.pkl": Golden dataset of size (63, 3778). First six examples correspond to: AraCyc, EcoCyc, HumanCyc, LeishCyc, TrypanoCyc, and YeastCyc.
+    - "golden_y.pkl": Golden dataset of size (63, 2526). First six examples correspond pathways to: AraCyc, EcoCyc, HumanCyc, LeishCyc, TrypanoCyc, and YeastCyc.
+    - "symbionts_X.pkl": Symbiont dataset of size (3, 3650).
+    - "symbionts_Xe.pkl": Symbiont dataset of size (3, 3778).
+    - "symbionts_y.pkl": Symbiont dataset of size (3, 2526).
+    - "cami_X.pkl": CAMI dataset of size (40, 3650).
+    - "cami_Xe.pkl": CAMI dataset of size (40, 3778).
+    - "cami_y.pkl": CAMI dataset of size (40, 2526).
+    - "hots_4_X.pkl": HOT metagenomics dataset of size (6, 3650).
+    - "hots_4_Xe.pkl": HOT metagenomics dataset of size (6, 3778).
+    - "hots_4_y.pkl": HOT metagenomics dataset of size (6, 2526).
+    - "biocyc21_X.pkl": BioCyc (v21 tier 2 \& 3) dataset of size (9429, 3650).
+    - "biocyc21_Xe.pkl": BioCyc (v21 tier 2 \& 3) dataset of size (9429, 3778).
+    - "biocyc21_y.pkl": BioCyc (v21 tier 2 \& 3) dataset of size (9429, 2526).
+    - "delicious_train_X.pkl": Delicious training X dataset of size (12920, 500).
+    - "delicious_test_X.pkl": Delicious test X dataset of size (3185, 500).
+    - "delicious_train_y.pkl": Delicious training Y dataset of size (12920, 983).
+    - "delicious_test_y.pkl": Delicious test Y dataset of size (3185, 983).
     - "leADS.pkl": a pretrained model using "biocyc21_Xe.pkl" and "biocyc21_y.pkl" with nPSP (k=50).
 
 ## Installation and Basic Usage
