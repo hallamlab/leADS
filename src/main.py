@@ -382,5 +382,4 @@ def parse_command_line():
 
 
 if __name__ == "__main__":
-    # app.run(parse_command_line)
     parse_command_line()

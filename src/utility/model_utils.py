@@ -228,7 +228,10 @@ def score(y_true, y_pred, item_lst, six_db=False, A=1, B=1, C=1, top_k=150, mode
           file_name='results.txt', save_path=''):
     idx_lst = [1]
     if six_db:
-        item_lst = ['AraCyc', 'EcoCyc', 'HumanCyc', 'LeishCyc', 'TrypanoCyc', 'YeastCyc']
+        item_lst = ['AraCyc', 'EcoCyc', 'HumanCyc',
+                    'LeishCyc', 'TrypanoCyc', 'YeastCyc']
+        if y_true.shape[0] == 4:
+            item_lst = ['AraCyc', 'EcoCyc', 'HumanCyc', 'YeastCyc']
         idx_lst = [idx for idx in np.arange(len(item_lst))]
     print('\t>> Scores are saved to {0:s}...'.format(str(file_name)))
     for i, idx in enumerate(idx_lst):

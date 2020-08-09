@@ -213,11 +213,12 @@ def __train(arg):
 
         file_name = arg.file_name + '_scores.txt'
         if arg.pred_labels:
-            score(y_true=y.toarray(), y_pred=y_pred.toarray(), item_lst=['biocyc'], six_db=False,
-                  top_k=arg.psp_k, mode='a', file_name=file_name, save_path=arg.rspath)
             if arg.dsname == 'golden':
-                score(y_true=y.toarray(), y_pred=y_pred.toarray(), item_lst=['biocyc'], six_db=True,
-                      top_k=arg.psp_k, mode='a', file_name=file_name, save_path=arg.rspath)
+                score(y_true=y.toarray(), y_pred=y_pred.toarray(), item_lst=[arg.dsname], six_db=True,
+                    top_k=arg.psp_k, mode='a', file_name=file_name, save_path=arg.rspath)
+            else:
+                score(y_true=y.toarray(), y_pred=y_pred.toarray(), item_lst=[arg.dsname], six_db=False,
+                    top_k=arg.psp_k, mode='a', file_name=file_name, save_path=arg.rspath)
 
     ##########################################################################################################
     ######################                      PREDICT USING leADS                      ######################
