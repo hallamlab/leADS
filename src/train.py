@@ -86,36 +86,29 @@ def __train(arg):
         print('\n{0})- Preprocess dataset...'.format(steps))
         steps = steps + 1
         print('\t>> Loading files...')
-        X = load_data(file_name=arg.X_name,
-                      load_path=arg.dspath, tag="instances")
+        X = load_data(file_name=arg.X_name, load_path=arg.dspath, tag="instances")
         X = X[:, :arg.cutting_point]
 
         # load a biocyc file
-        data_object = load_data(file_name=arg.object_name,
-                                load_path=arg.ospath, tag='the biocyc object')
+        data_object = load_data(file_name=arg.object_name, load_path=arg.ospath, tag='the biocyc object')
         ec_dict = data_object["ec_id"]
         pathway_dict = data_object["pathway_id"]
         del data_object
 
         pathway_dict = dict((idx, id) for id, idx in pathway_dict.items())
         ec_dict = dict((idx, id) for id, idx in ec_dict.items())
-        labels_components = load_data(
-            file_name=arg.pathway2ec_name, load_path=arg.ospath, tag='M')
+        labels_components = load_data(file_name=arg.pathway2ec_name, load_path=arg.ospath, tag='M')
         print('\t>> Loading label to component mapping file object...')
-        pathway2ec_idx = load_data(
-            file_name=arg.pathway2ec_idx_name, load_path=arg.ospath, print_tag=False)
+        pathway2ec_idx = load_data(file_name=arg.pathway2ec_idx_name, load_path=arg.ospath, print_tag=False)
         pathway2ec_idx = list(pathway2ec_idx)
         tmp = list(ec_dict.keys())
-        ec_dict = dict((idx, ec_dict[tmp.index(ec)])
-                       for idx, ec in enumerate(pathway2ec_idx))
+        ec_dict = dict((idx, ec_dict[tmp.index(ec)]) for idx, ec in enumerate(pathway2ec_idx))
 
         # load path2vec features
-        path2vec_features = np.load(
-            file=os.path.join(arg.mdpath, arg.features_name))
+        path2vec_features = np.load(file=os.path.join(arg.ospath, arg.features_name))
 
         # load a hin file
-        hin = load_data(file_name=arg.hin_name, load_path=arg.ospath,
-                        tag='heterogeneous information network')
+        hin = load_data(file_name=arg.hin_name, load_path=arg.ospath, tag='heterogeneous information network')
         # get pathway2ec mapping
         node2idx_pathway2ec = [node[0] for node in hin.nodes(data=True)]
         del hin
@@ -126,7 +119,7 @@ def __train(arg):
                          batch_size=arg.batch, num_jobs=arg.num_jobs)
 
     ##########################################################################################################
-    ######################                       TRAIN USING leADS                       ######################
+    ######################                            TRAIN                             ######################
     ##########################################################################################################
 
     if arg.train:
@@ -142,31 +135,41 @@ def __train(arg):
         bags_labels = None
         label_features = None
         centroids = None
+
+        if not arg.train_labels:
+            y_Bags = load_data(file_name=arg.yB_name, load_path=arg.dspath, tag="B")
+            bags_labels = load_data(file_name=arg.bags_labels, load_path=arg.ospath,
+                                    tag="bags_labels with associated pathways")
+            label_features = load_data(file_name=arg.features_name, load_path=arg.ospath, tag="features")
+            centroids = np.load(file=os.path.join(arg.ospath, arg.centroids))
+            centroids = centroids[centroids.files[0]]
+
         A = None
         if arg.fuse_weight:
-            A = load_item_features(file_name=os.path.join(arg.ospath, arg.similarity_name),
-                                   use_components=False)
+            A = load_item_features(file_name=os.path.join(arg.ospath, arg.similarity_name), use_components=False)
         if arg.train_selected_sample:
             if os.path.exists(os.path.join(arg.rspath, arg.samples_ids)):
-                sample_ids = load_data(
-                    file_name=arg.samples_ids, load_path=arg.rspath, tag="selected samples")
+                sample_ids = load_data(file_name=arg.samples_ids, load_path=arg.rspath, tag="selected samples")
                 sample_ids = np.array(sample_ids)
                 X = X[sample_ids, :]
                 y = y[sample_ids, :]
+                if not arg.train_labels:
+                    y_Bags = y_Bags[sample_ids, :]
             else:
                 print('\t\t No sample ids file is provided...')
+
         model = leADS(alpha=arg.alpha, binarize_input_feature=arg.binarize_input_feature,
                       normalize_input_feature=arg.normalize_input_feature,
-                      use_external_features=arg.use_external_features, cutting_point=arg.cutting_point,
-                      fit_intercept=arg.fit_intercept, decision_threshold=arg.decision_threshold,
-                      subsample_input_size=arg.ssample_input_size, subsample_labels_size=arg.ssample_label_size,
-                      calc_ads=arg.calc_ads, acquisition_type=arg.acquisition_type, top_k=arg.top_k,
-                      ads_percent=arg.ads_percent, advanced_subsampling=arg.advanced_subsampling,
-                      tol_labels_iter=arg.tol_labels_iter, cost_subsample_size=arg.calc_subsample_size,
-                      calc_label_cost=arg.calc_label_cost, calc_bag_cost=arg.calc_bag_cost,
-                      calc_total_cost=arg.calc_total_cost, label_uncertainty_type=arg.label_uncertainty_type,
-                      label_bag_sim=arg.label_bag_sim, label_closeness_sim=arg.label_closeness_sim,
-                      corr_bag_sim=arg.corr_bag_sim,
+                      use_external_features=arg.use_external_features,
+                      cutting_point=arg.cutting_point, fit_intercept=arg.fit_intercept,
+                      decision_threshold=arg.decision_threshold, subsample_input_size=arg.ssample_input_size,
+                      subsample_labels_size=arg.ssample_label_size, calc_ads=arg.calc_ads,
+                      acquisition_type=arg.acquisition_type, top_k=arg.top_k, ads_percent=arg.ads_percent,
+                      advanced_subsampling=arg.advanced_subsampling, tol_labels_iter=arg.tol_labels_iter,
+                      cost_subsample_size=arg.calc_subsample_size, calc_label_cost=arg.calc_label_cost,
+                      calc_bag_cost=arg.calc_bag_cost, calc_total_cost=arg.calc_total_cost,
+                      label_uncertainty_type=arg.label_uncertainty_type, label_bag_sim=arg.label_bag_sim,
+                      label_closeness_sim=arg.label_closeness_sim, corr_bag_sim=arg.corr_bag_sim,
                       corr_label_sim=arg.corr_label_sim, corr_input_sim=arg.corr_input_sim, penalty=arg.penalty,
                       alpha_elastic=arg.alpha_elastic, l1_ratio=arg.l1_ratio, sigma=arg.sigma,
                       fuse_weight=arg.fuse_weight, lambdas=arg.lambdas, loss_threshold=arg.loss_threshold,
@@ -180,7 +183,7 @@ def __train(arg):
                   display_params=display_params)
 
     ##########################################################################################################
-    ######################                     EVALUATE USING leADS                      ######################
+    ######################                           EVALUATE                           ######################
     ##########################################################################################################
 
     if arg.evaluate:
@@ -195,12 +198,21 @@ def __train(arg):
         centroids = None
         if not arg.pred_bags:
             y = load_data(file_name=arg.y_name, load_path=arg.dspath, tag="y")
- 
-        # load model
-        model = load_data(file_name=arg.model_name + '.pkl',
-                          load_path=arg.mdpath, tag='leADS')
+        if arg.pred_bags:
+            y_Bags = load_data(file_name=arg.yB_name, load_path=arg.dspath, tag="B")
 
-         # labels prediction score
+        # load model
+        model = load_data(file_name=arg.model_name + '.pkl', load_path=arg.mdpath, tag='leADS')
+
+        if model.learn_bags:
+            bags_labels = load_data(file_name=arg.bags_labels, load_path=arg.dspath,
+                                    tag="bags_labels with associated pathways")
+        if model.label_uncertainty_type == "dependent":
+            label_features = load_data(file_name=arg.features_name, load_path=arg.dspath, tag="features")
+            centroids = np.load(file=os.path.join(arg.dspath, arg.centroids))
+            centroids = centroids[centroids.files[0]]
+
+        # labels prediction score
         y_pred_Bags, y_pred = model.predict(X=X, bags_labels=bags_labels, label_features=label_features,
                                             centroids=centroids,
                                             estimate_prob=arg.estimate_prob, pred_bags=arg.pred_bags,
@@ -212,16 +224,19 @@ def __train(arg):
                                             num_jobs=arg.num_jobs)
 
         file_name = arg.file_name + '_scores.txt'
+        if arg.pred_bags:
+            score(y_true=y_Bags.toarray(), y_pred=y_pred_Bags.toarray(), item_lst=['biocyc_bags'],
+                  six_db=False, top_k=arg.psp_k, mode='a', file_name=file_name, save_path=arg.rspath)
         if arg.pred_labels:
             if arg.dsname == 'golden':
                 score(y_true=y.toarray(), y_pred=y_pred.toarray(), item_lst=[arg.dsname], six_db=True,
-                    top_k=arg.psp_k, mode='a', file_name=file_name, save_path=arg.rspath)
+                      top_k=arg.psp_k, mode='a', file_name=file_name, save_path=arg.rspath)
             else:
                 score(y_true=y.toarray(), y_pred=y_pred.toarray(), item_lst=[arg.dsname], six_db=False,
-                    top_k=arg.psp_k, mode='a', file_name=file_name, save_path=arg.rspath)
+                      top_k=arg.psp_k, mode='a', file_name=file_name, save_path=arg.rspath)
 
     ##########################################################################################################
-    ######################                      PREDICT USING leADS                      ######################
+    ######################                            PREDICT                           ######################
     ##########################################################################################################
 
     if arg.predict:
@@ -240,15 +255,12 @@ def __train(arg):
             del data_object
             pathway_dict = dict((idx, id) for id, idx in pathway_dict.items())
             ec_dict = dict((idx, id) for id, idx in ec_dict.items())
-            labels_components = load_data(
-                file_name=arg.pathway2ec_name, load_path=arg.ospath, tag='M')
+            labels_components = load_data(file_name=arg.pathway2ec_name, load_path=arg.ospath, tag='M')
             print('\t>> Loading label to component mapping file object...')
-            pathway2ec_idx = load_data(
-                file_name=arg.pathway2ec_idx_name, load_path=arg.ospath, print_tag=False)
+            pathway2ec_idx = load_data(file_name=arg.pathway2ec_idx_name, load_path=arg.ospath, print_tag=False)
             pathway2ec_idx = list(pathway2ec_idx)
             tmp = list(ec_dict.keys())
-            ec_dict = dict((idx, ec_dict[tmp.index(ec)])
-                           for idx, ec in enumerate(pathway2ec_idx))
+            ec_dict = dict((idx, ec_dict[tmp.index(ec)]) for idx, ec in enumerate(pathway2ec_idx))
             if arg.extract_pf:
                 X, sample_ids = parse_files(ec_dict=ec_dict, input_folder=arg.dsfolder, rsfolder=arg.rsfolder,
                                             rspath=arg.rspath, num_jobs=arg.num_jobs)
@@ -264,12 +276,10 @@ def __train(arg):
                                     tag='heterogeneous information network',
                                     print_tag=False)
                     # get pathway2ec mapping
-                    node2idx_pathway2ec = [node[0]
-                                           for node in hin.nodes(data=True)]
+                    node2idx_pathway2ec = [node[0] for node in hin.nodes(data=True)]
                     del hin
                     print('\t>> Loading path2vec_features file...')
-                    path2vec_features = np.load(
-                        file=os.path.join(arg.mdpath, arg.features_name))
+                    path2vec_features = np.load(file=os.path.join(arg.ospath, arg.features_name))
                     __build_features(X=X, pathwat_dict=pathway_dict, ec_dict=ec_dict,
                                      labels_components=labels_components,
                                      node2idx_pathway2ec=node2idx_pathway2ec,
@@ -290,10 +300,16 @@ def __train(arg):
         centroids = None
 
         # load model
-        model = load_data(file_name=arg.model_name + '.pkl',
-                          load_path=arg.mdpath, tag='leADS')
+        model = load_data(file_name=arg.model_name + '.pkl', load_path=arg.mdpath, tag='leADS')
 
-        # model.get_informative_points(X=X)
+        if model.learn_bags:
+            bags_labels = load_data(file_name=arg.bags_labels, load_path=arg.ospath,
+                                    tag="bags_labels with associated pathways")
+        if model.label_uncertainty_type == "dependent":
+            label_features = load_data(file_name=arg.features_name, load_path=arg.ospath, tag="features")
+            centroids = np.load(file=os.path.join(arg.ospath, arg.centroids))
+            centroids = centroids[centroids.files[0]]
+
         # predict
         y_pred_Bags, y_pred = model.predict(X=X, bags_labels=bags_labels, label_features=label_features,
                                             centroids=centroids,
@@ -324,10 +340,15 @@ def __train(arg):
                               batch_size=arg.batch, num_jobs=arg.num_jobs, rsfolder=arg.rsfolder, rspath=arg.rspath,
                               dspath=arg.dspath, file_name=arg.file_name + '_leads')
         else:
-            print('\t>> Storing predictions (label index) to: {0:s}'.format(
-                arg.file_name + '_leads_y.pkl'))
+            print('\t>> Storing predictions (label index) to: {0:s}'.format(arg.file_name + '_leads_y.pkl'))
             save_data(data=y_pred, file_name=arg.file_name + "_leads_y.pkl", save_path=arg.dspath,
                       mode="wb", print_tag=False)
+            if arg.pred_bags:
+                print('\t>> Storing predictions (bag index) to: {0:s}'.format(
+                    arg.file_name + '_leads_yBags.pkl'))
+                save_data(data=y_pred_Bags, file_name=arg.file_name + "_leads_yBags.pkl", save_path=arg.dspath,
+                          mode="wb", print_tag=False)
+
 
 def train(arg):
     try:

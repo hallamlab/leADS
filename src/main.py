@@ -6,7 +6,7 @@ __version__ = "1.0"
 __maintainer__ = "Abdur Rahman M. A. Basher"
 __email__ = "arbasher@alumni.ubc.ca"
 __status__ = "Production"
-__description__ = "This file is the main entry to perform learning and prediction on dataset using leADS model."
+__description__ = "This file is the main entry to perform learning and prediction using leADS."
 
 import datetime
 import json
@@ -97,7 +97,7 @@ def __internal_args(parse_args):
     ###***************************        Training arguments        ***************************###
 
     arg.train = parse_args.train
-    arg.train_labels = True
+    arg.train_labels = parse_args.train_labels
     arg.fit_intercept = parse_args.fit_intercept
     arg.train_selected_sample = parse_args.train_selected_sample
     arg.ssample_input_size = parse_args.ssample_input_size
@@ -146,16 +146,14 @@ def __internal_args(parse_args):
     arg.evaluate = parse_args.evaluate
     arg.predict = parse_args.predict
     arg.pathway_report = parse_args.pathway_report
-    arg.extract_pf = True
-    if parse_args.no_parse:
-        arg.extract_pf = False
-    arg.build_features = True
-    if parse_args.no_build_features:
-        arg.build_features = False
+    arg.extract_pf = False
+    if parse_args.parse_pf:
+        arg.extract_pf = True
+    arg.build_features = parse_args.build_features:
     arg.plot = parse_args.plot
-    arg.pred_bags = False
-    arg.pred_labels = True
-    arg.build_up = False
+    arg.pred_bags = parse_args.pred_bags
+    arg.pred_labels = parse_args.pred_labels
+    arg.build_up = parse_args.build_up
     arg.decision_threshold = parse_args.decision_threshold
     arg.soft_voting = parse_args.soft_voting
     arg.pref_rank = parse_args.pref_rank
@@ -172,8 +170,8 @@ def parse_command_line():
     # Parses the arguments.
     parser = ArgumentParser(description="Run leADS.")
 
-    parser.add_argument('--display-interval', default=2, type=int,
-                        help='display intervals. -1 means display per each iteration. (default value: 2).')
+    parser.add_argument('--display-interval', default=1, type=int,
+                        help='display intervals. -1 means display per each iteration. (default value: 1).')
     parser.add_argument('--random_state', default=12345, type=int, help='Random seed. (default value: 12345).')
     parser.add_argument('--num-jobs', type=int, default=1, help='Number of parallel workers. (default value: 2).')
     parser.add_argument('--num-models', default=3, type=int, help='Number of models to generate. (default value: 3).')
@@ -181,7 +179,7 @@ def parse_command_line():
     parser.add_argument('--max-inner-iter', default=15, type=int,
                         help='Number of inner iteration for logistic regression. '
                              '10. (default value: 15)')
-    parser.add_argument('--num-epochs', default=2, type=int,
+    parser.add_argument('--num-epochs', default=3, type=int,
                         help='Number of epochs over the training set. (default value: 3).')
 
     # Arguments for path--build-features
@@ -212,25 +210,25 @@ def parse_command_line():
                         help='The pathway2ec association matrix file name. (default value: "pathway2ec.pkl")')
     parser.add_argument('--pathway2ec-idx-name', type=str, default='pathway2ec_idx.pkl',
                         help='The pathway2ec association indices file name. (default value: "pathway2ec_idx.pkl")')
-    parser.add_argument('--features-name', type=str, default='path2vec_cmt_tf_embeddings.npz',
+    parser.add_argument('--features-name', type=str, default='biocyc_soap_features.pkl',
                         help='The features file name. (default value: "biocyc_soap_features.pkl")')
     parser.add_argument('--centroids', type=str, default='biocyc_bag_centroid.npz',
                         help='The bags centroids file name. (default value: "biocyc_bag_centroid.npz")')
-    parser.add_argument('--hin-name', type=str, default='hin_cmt.pkl',
-                        help='The hin file name. (default value: "hin_cmt.pkl")')
-    parser.add_argument('--X-name', type=str, default='cami_Xe.pkl',
-                        help='The X file name. (default value: "cami_Xe.pkl")')
-    parser.add_argument('--y-name', type=str, default='cami_y.pkl',
-                        help='The y file name. (default value: "cami_y.pkl")')
-    parser.add_argument('--yB-name', type=str, default='reMap_3_B_pred.pkl',
-                        help='The bags file name. (default value: "reMap_3_B_pred.pkl")')
+    parser.add_argument('--hin-name', type=str, default='hin.pkl',
+                        help='The hin file name. (default value: "hin.pkl")')
+    parser.add_argument('--X-name', type=str, default='biocyc_Xe.pkl',
+                        help='The X file name. (default value: "biocyc_Xe.pkl")')
+    parser.add_argument('--y-name', type=str, default='biocyc_y.pkl',
+                        help='The y file name. (default value: "biocyc_y.pkl")')
+    parser.add_argument('--yB-name', type=str, default='biocyc_B.pkl',
+                        help='The bags file name. (default value: "biocyc_B.pkl")')
     parser.add_argument('--samples-ids', type=str, default=None,
                         help='The samples ids file name. (default value: "leADS_samples.pkl")')
     parser.add_argument('--bags-labels', type=str, default='biocyc_bag_pathway.pkl',
                         help='The bags to labels grouping file name. (default value: "biocyc_bag_pathway.pkl")')
     parser.add_argument('--similarity-name', type=str, default='pathway_similarity_cos.pkl',
                         help='The labels similarity file name. (default value: "pathway_similarity_cos.pkl")')
-    parser.add_argument('--file-name', type=str, default='SAG',
+    parser.add_argument('--file-name', type=str, default='biocyc',
                         help='The file name to save an object. (default value: "biocyc")')
     parser.add_argument('--model-name', type=str, default='leADS',
                         help='The file name, excluding extension, to save an object. (default value: "leADS")')
@@ -254,9 +252,9 @@ def parse_command_line():
     parser.add_argument('--pathway-report', action='store_true', default=False,
                         help='Whether to generate a detailed report for pathways for each instance. '
                              '(default value: False).')
-    parser.add_argument('--no-parse', action='store_true', default=False,
+    parser.add_argument('--parse-pf', action='store_true', default=False,
                         help='Whether to parse Pathologic format file (pf) from a folder (default value: False).')
-    parser.add_argument('--no-build-features', action='store_true', default=False,
+    parser.add_argument('--build-features', action='store_true', default=False,
                         help='Whether to construct features (default value: True).')
     parser.add_argument('--plot', action='store_true', default=False,
                         help='Whether to produce various plots from predicted outputs. '
@@ -293,7 +291,7 @@ def parse_command_line():
                              '(default value: 10).')
     parser.add_argument('--advanced-subsampling', action='store_true', default=False,
                         help='Whether to apply advanced subsampling dataset based on class labels. '
-                             '(default value: True).')
+                             '(default value: False).')
     parser.add_argument('--calc-subsample-size', type=int, default=50,
                         help='Compute loss on selected samples. (default value: 50).')
     parser.add_argument("--calc-label-cost", action='store_false', default=True,
@@ -306,10 +304,10 @@ def parse_command_line():
     parser.add_argument('--label-uncertainty-type', default='factorize', type=str,
                         choices=['factorize', 'dependent'],
                         help='The chosen model type. (default value: "factorize")')
-    parser.add_argument('--acquisition-type', default='entropy', type=str,
+    parser.add_argument('--acquisition-type', default='psp', type=str,
                         choices=['entropy', 'mutual', 'variation', 'psp'],
                         help='The acquisition function for estimating the predictive uncertainty. '
-                             '(default value: "entropy")')
+                             '(default value: "psp")')
     parser.add_argument('--top-k', type=int, default=50,
                         help='Top k labels to be considered for variation ratio or psp acquisition functions. (default value: 50).')
     parser.add_argument('--psp-k', default=10, type=int,
@@ -343,7 +341,7 @@ def parse_command_line():
                         help="Six hyper-parameters for constraints. Default is [0.01, 0.01, 0.01, 0.01, 0.01, 10].")
     parser.add_argument("--loss-threshold", type=float, default=0.05,
                         help="A hyper-parameter for deciding the cutoff threshold of the differences "
-                             "of loss between two consecutive rounds. Default is 0.05.")
+                             "of loss between two consecutive rounds. (default value: 0.05).")
     parser.add_argument("--early-stop", action='store_true', default=False,
                         help="Whether to terminate training based on relative change "
                              "between two consecutive iterations. (default value: False).")
@@ -353,9 +351,17 @@ def parse_command_line():
     parser.add_argument('--lr0', default=0.0, type=float, help='The initial learning rate. (default value: 0.0).')
     parser.add_argument('--fr', type=float, default=0.9,
                         help='Forgetting rate to control how quickly old information is forgotten. The value should '
-                             'be set between (0.5, 1.0] to guarantee asymptotic convergence. (default value: 0.7).')
+                             'be set between (0.5, 1.0] to guarantee asymptotic convergence. (default value: 0.9).')
     parser.add_argument('--delay', type=float, default=1.,
-                        help='Delay factor down weights early iterations. (default value: 0.9).')
+                        help='Delay factor down weights early iterations. (default value: 1).')
+    parser.add_argument('--train-labels', action='store_true', default=False,
+                        help='Whether to train labels only. (default value: False).')
+    parser.add_argument('--pred-bags', action='store_true', default=False,
+                        help='Whether to predict bags. (default value: False).')
+    parser.add_argument('--pred-labels', action='store_true', default=False,
+                        help='Whether to predict labels. (default value: False).')
+    parser.add_argument('--build-up', action='store_true', default=False,
+                        help='Whether to predict labels based on bags or not. (default value: False).')
     parser.add_argument('--soft-voting', action='store_true', default=False,
                         help='Whether to predict labels based on the calibrated sums of the '
                              'predicted probabilities from an ensemble. (default value: False).')
