@@ -8,7 +8,7 @@ The codebase is tested to work under Python 3.7. To install the necessary requir
 
 ``pip install -r requirements.txt``
 
-Basically, *leADS* requires the following distribution and packages:
+Basically, *leADS* requires following packages:
 - [Anaconda](https://www.anaconda.com/)
 - [NumPy](http://www.numpy.org/) (>= 1.15)
 - [scikit-learn](https://scikit-learn.org/stable/) (>= 0.20)
@@ -49,12 +49,13 @@ Please download the following files from [Zenodo](https://zenodo.org/record/3940
     - "delicious_test_X.pkl": Delicious test X dataset of size (3185, 500).
     - "delicious_train_y.pkl": Delicious training Y dataset of size (12920, 983).
     - "delicious_test_y.pkl": Delicious test Y dataset of size (3185, 983).
-    - "leADS.pkl": a pretrained model using "biocyc21_Xe.pkl" and "biocyc21_y.pkl" with nPSP (k=50). This model was trained using class-labels (pathways) approach.
+    - "leADS.pkl": a pretrained model using "biocyc21_Xe.pkl" and "biocyc21_y.pkl" with nPSP (k=50), ensemble size 10, , and per% = 70%. This model was trained using class-labels (pathways) approach.
     - "leADS_samples.pkl": indices of 4752 samples from "biocyc21_Xe.pkl".
-    - "leADS_F.pkl": a pretrained model using "biocyc205_tier23_9255_Xe.pkl", "biocyc205_tier23_9255_y.pkl", and "biocyc205_tier23_9255_B.pkl" with nPSP (k=50). This model was trained using factorization approach.
-    - "leADS_F_samples.pkl": indices of 4752 samples from "biocyc21_Xe.pkl".
-    - "leADS_D.pkl": a pretrained model using "biocyc205_tier23_9255_Xe.pkl", "biocyc205_tier23_9255_y.pkl", and "biocyc205_tier23_9255_B.pkl" with nPSP (k=50). This model was trained using dependency approach.
-    - "leADS_D_samples.pkl": indices of 4752 samples from "biocyc21_Xe.pkl".
+    - "leADS_F.pkl": a pretrained model using "biocyc21_Xe.pkl", "biocyc21_y.pkl", and "biocyc21_B.pkl" with variation (k=50), ensemble size = 10, and per% = 70%. This model was trained using factorization approach.
+    - "leADS_F_samples.pkl": indices of 5940 samples from "biocyc21_Xe.pkl".
+    - "leADS_D.pkl": a pretrained model using "biocyc21_Xe.pkl", "biocyc21_y.pkl", and "biocyc21_B.pkl" with variation (k=50), ensemble size = 10, and per% = 30%. This model was trained using dependency approach.
+    - "leADS_D_samples.pkl": indices of 2545 samples from "biocyc21_Xe.pkl".
+    - "leADS_Dy.pkl": a pretrained model using "biocyc21_Xe.pkl" and "biocyc21_y.pkl" using leADS_D_samples.pkl samples with ensemble size = 10.
 
 ## Installation and Basic Usage
 Run the following commands to clone the repository to an appropriate location:
@@ -71,7 +72,11 @@ If you have external features (e.g. "pathway2vec_embeddings.npz") with graph fil
 where *--cutting-point* is the number of ECs, *--object-name* is an object containing the preprocessed MetaCyc database, *--pathway2ec-name* is a matrix representing Pathway-EC association, *--pathway2ec-idx-name* corresponds the pathway2ec association indices, *--hin-name* is the heterogeneous information network, *--features-name* is features corresponding ECs and pathways, *--file-name* corresponds the name of preprocessed files (wihtout extension), *--batch* is batch size, *--num-jobs* corresponds the number of parallel workers, and *--X-name* is the input space of multi-label data.
 
 ## Training
-leADS can be trained using either labels or bags. For bags, there are two flavours: *factorization* and *dependency* based approaches, where a bag is comprised of correlated labels. While the former strategy demoposes labels and bags for effieicnt training, the later approach assumes samples are conditionally independent from bags given labels. So, in total, you can train leADS using either of the three methods. Below we provide few examples.
+leADS can be trained using either labels or bags. For bags, there are two flavours: *factorization* and *dependency* based approaches, where a bag is comprised of correlated labels. While the former strategy demoposes labels and bags for effieicnt training, the later approach assumes samples are conditionally independent from bags given labels. The two approaches are depicted below:
+
+![flavours](flavours.png)
+
+So, in total, you can train leADS using either of the three methods. Below we provide few examples.
 
 Description about arguments in all examples: *--train-labels* is a boolean variable suggesting to train leADS using only class-labels data (e.g. "biocyc21_Xe.pkl" and "biocyc21_y.pkl"), *--binarize* is a boolean variable indicating whether to binarize data, *--use-external-features* is a boolean variable indicating whether to use external features that are included in data, *--cutting-point* is the cutting point after which binarize operation is halted in the input data, *--calc-ads* is a boolean variable indicating whether to subsample dataset using active dataset subsampling (ADS), *--ads-percent* corresponds the dataset subsampling size (within [0, 1]), *--acquisition-type* is the acquisition function for estimating the predictive uncertainty (["entropy", "mutual", "variation", "psp"]), *--top-k* is the top k labels to be considered for variation ratio or psp acquisition functions, *--ssample-input-size* corresponds the  size of random subsampled inputs, *--ssample-label-size* corresponds the  size of random subsampled pathway labels, *--calc-subsample-size* is the number samples on which the cost function is computed, *--lambdas* corresponds the six hyper-parameters, *--penalty* is the type of the regularization term to be applied, *--batch* is batch size, *--num-jobs* corresponds the number of parallel workers, *--max-inner-iter* corresponds the number of inner iteration for logistic regression, *--num-epochs* corresponds the number of iterations over the training set, *--num-models* corresponds the number of base learners in an ensemble, and *--model-name* corresponds the name of the model excluding any *EXTENSION*. The model name will have *.pkl* extension. The arguments *--X-name* is the input space of multi-label data and *--y-name* is the pathway space of multi-label data. For the dataset, any multi-label dataset can be employed.
 
@@ -114,11 +119,11 @@ To train a multi-label dataset (e.g. "biocyc21_Xe.pkl" and "biocyc21_y.pkl") usi
 ### Examples for training leADS with bags and labels
 To train leADS using either *factorization* or *dependency* predictive uncertainty approaches, you need to obtain bags using [reMap](https://github.com/hallamlab/reMap). The same examples in [Markdown - Link](#Link) can be applied here as well. For example to train using *factorization* approach with *variation* based subsampling, run the following command:
 
-``python main.py --train-labels --binarize --use-external-features --cutting-point 3650 --calc-bag-cost --calc-ads --ads-percent 0.7 --acquisition-type "psp" --label-uncertainty-type "factorize" --top-k 50 --ssample-input-size 0.7 --ssample-label-size 2000 --calc-subsample-size 1000 --lambdas 0.01 0.01 0.01 0.01 0.01 10 --penalty "l21" --bags-labels "bag_pathway.pkl" --features-name "biocyc_features.pkl" --centroids "bag_centroid.npz" --X-name "biocyc21_Xe.pkl" --y-name "biocyc21_y.pkl" --yB-name "biocyc21_B.pkl" --model-name "[model name (without extension)]" --mdpath "[path to store model]" --dspath "[path to the dataset]" --ospath "[path to all object files (e.g. "biocyc.pkl" and "pathway2vec_embeddings.npz")]" --rspath "[path to store costs and resulted samples indices]" --logpath "[path to the log directory]" --batch 50 --max-inner-iter 5 --num-epochs 10 --num-models 3 --num-jobs 2 --display-interval 1``
+``python main.py --train-labels --binarize --use-external-features --cutting-point 3650 --calc-bag-cost --calc-ads --ads-percent 0.7 --acquisition-type "variation" --label-uncertainty-type "factorize" --top-k 50 --ssample-input-size 0.7 --ssample-label-size 2000 --calc-subsample-size 1000 --lambdas 0.01 0.01 0.01 0.01 0.01 10 --penalty "l21" --bags-labels "bag_pathway.pkl" --features-name "biocyc_features.pkl" --centroids "bag_centroid.npz" --X-name "biocyc21_Xe.pkl" --y-name "biocyc21_y.pkl" --yB-name "biocyc21_B.pkl" --model-name "[model name (without extension)]" --mdpath "[path to store model]" --dspath "[path to the dataset]" --ospath "[path to all object files (e.g. "biocyc.pkl" and "pathway2vec_embeddings.npz")]" --rspath "[path to store costs and resulted samples indices]" --logpath "[path to the log directory]" --batch 50 --max-inner-iter 5 --num-epochs 10 --num-models 3 --num-jobs 2 --display-interval 1``
 
 For *dependency* based approach, run the below command:
 
-``python main.py --train-labels --binarize --use-external-features --cutting-point 3650 --calc-bag-cost --calc-ads --ads-percent 0.7 --acquisition-type "psp" --label-uncertainty-type "dependent" --top-k 50 --ssample-input-size 0.7 --ssample-label-size 2000 --calc-subsample-size 1000 --lambdas 0.01 0.01 0.01 0.01 0.01 10 --penalty "l21" --bags-labels "bag_pathway.pkl" --features-name "biocyc_features.pkl" --centroids "bag_centroid.npz" --X-name "biocyc21_Xe.pkl" --y-name "biocyc21_y.pkl" --yB-name "biocyc21_B.pkl" --model-name "[model name (without extension)]" --mdpath "[path to store model]" --dspath "[path to the dataset]" --ospath "[path to all object files (e.g. "biocyc.pkl" and "pathway2vec_embeddings.npz")]" --rspath "[path to store costs and resulted samples indices]" --logpath "[path to the log directory]" --batch 50 --max-inner-iter 5 --num-epochs 10 --num-models 3 --num-jobs 2 --display-interval 1``
+``python main.py --train-labels --binarize --use-external-features --cutting-point 3650 --calc-bag-cost --calc-ads --ads-percent 0.7 --acquisition-type "variation" --label-uncertainty-type "dependent" --top-k 50 --ssample-input-size 0.7 --ssample-label-size 2000 --calc-subsample-size 1000 --lambdas 0.01 0.01 0.01 0.01 0.01 10 --penalty "l21" --bags-labels "bag_pathway.pkl" --features-name "biocyc_features.pkl" --centroids "bag_centroid.npz" --X-name "biocyc21_Xe.pkl" --y-name "biocyc21_y.pkl" --yB-name "biocyc21_B.pkl" --model-name "[model name (without extension)]" --mdpath "[path to store model]" --dspath "[path to the dataset]" --ospath "[path to all object files (e.g. "biocyc.pkl" and "pathway2vec_embeddings.npz")]" --rspath "[path to store costs and resulted samples indices]" --logpath "[path to the log directory]" --batch 50 --max-inner-iter 5 --num-epochs 10 --num-models 3 --num-jobs 2 --display-interval 1``
 
 where in both commands, *--bags-labels* is the file name to bagging pathways (e.g. "bag_pathway.pkl"), *--features-name* corresponds the file name of the features (e.g. "biocyc_features.pkl"), *--centroids* corresponds the file name of bags centroids (e.g. "bag_centroid.npz"). Note that you need to incoperate class-bags datasets (e.g. "biocyc21_B.pkl").
 

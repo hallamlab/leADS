@@ -9,4 +9,3 @@ plotly
 squarify
 matplotlib
 altair
-scikit-multilearn
