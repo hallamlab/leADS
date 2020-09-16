@@ -18,7 +18,7 @@ Basically, *leADS* requires following packages:
 
 
 ## Experimental Objects and Test Samples
-Please download the following files from [Zenodo](https://zenodo.org/record/3940706#.Xwtb7nVKjeQ).
+Please download the following files from [Zenodo](https://zenodo.org/record/3993874#.X2BLO4ZlDeQ).
 - The link contains the following preprocessed *object* files (store them in one folder):
     - "biocyc.pkl": an object containing the preprocessed MetaCyc database.
     - "pathway2ec.pkl": a matrix representing Pathway-EC association of size (3650, 2526).
@@ -169,7 +169,7 @@ For **pref-rank** prediction strategy, run the following:
 
 ## Citing
 If you find *leADS* useful in your research, please consider citing the following paper:
-- M. A. Basher, Abdur Rahman and Hallam, Steven J.. **"Metabolic Pathway Prediction using an Ensemble of Active Dataset Subsampling."**, [TO BE ADDED].
+- M. A. Basher, Abdur Rahman and Hallam, Steven J.. **["Multi-label pathway prediction based on active dataset subsampling."](https://www.biorxiv.org/content/10.1101/2020.09.14.297424v1)**, bioRxiv (2020).
 
 ## Contact
 For any inquiries, please contact: [arbasher@alumni.ubc.ca](mailto:arbasher@alumni.ubc.ca)
