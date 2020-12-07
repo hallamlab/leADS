@@ -919,7 +919,7 @@ class leADS:
         print('  \t\t>> Feed-Backward...')
         logger.info('\t\t>> Feed-Backward...')
 
-        parallel = Parallel(n_jobs=1, verbose=max(0, self.verbose - 1))
+        parallel = Parallel(n_jobs=self.num_jobs, prefer="threads", verbose=max(0, self.verbose - 1))
 
         if self.learn_bags:
             # optimize U
