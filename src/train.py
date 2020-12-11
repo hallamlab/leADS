@@ -3,15 +3,17 @@ This file is the main entry used to train the input dataset
 using leADS train and also report the predicted vocab.
 '''
 
-import numpy as np
 import os
 import sys
 import time
 import traceback
+
+import numpy as np
 from joblib import Parallel, delayed
-from model.leads import leADS
 from scipy.sparse import lil_matrix, hstack
 from sklearn import preprocessing
+
+from model.leads import leADS
 from utility.access_file import load_data, load_item_features, save_data
 from utility.model_utils import score, synthesize_report, compute_abd_cov
 from utility.parse_input import parse_files

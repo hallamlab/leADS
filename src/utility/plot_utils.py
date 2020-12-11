@@ -1,15 +1,16 @@
+import os
+import re
+from collections import defaultdict
+
 import altair as alt
 import community
 import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
-import os
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.offline as py
-import re
 import squarify
-from collections import defaultdict
 from joblib import Parallel, delayed
 from matplotlib import pyplot, patches
 from plotly.subplots import make_subplots
