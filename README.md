@@ -172,4 +172,4 @@ If you find *leADS* useful in your research, please consider citing the followin
 - M. A. Basher, Abdur Rahman and Hallam, Steven J.. **["Multi-label pathway prediction based on active dataset subsampling."](https://www.biorxiv.org/content/10.1101/2020.09.14.297424v1)**, bioRxiv (2020).
 
 ## Contact
-For any inquiries, please contact: [arbasher@alumni.ubc.ca](mailto:arbasher@alumni.ubc.ca)
+For any inquiries, please contact: [arbasher@student.ubc.ca](mailto:arbasher@student.ubc.ca)
