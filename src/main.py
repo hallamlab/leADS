@@ -1,10 +1,10 @@
-__author__ = "Abdur Rahman M. A. Basher"
-__date__ = '03/08/2020'
+__author__ = "Abdurrahman Abul-Basher"
+__date__ = '16/09/2020'
 __copyright__ = "Copyright 2020, The Hallam Lab"
-__license__ = "GPL v3"
+__license__ = "GPL"
 __version__ = "1.0"
-__maintainer__ = "Abdur Rahman M. A. Basher"
-__email__ = "arbasher@alumni.ubc.ca"
+__maintainer__ = "Abdurrahman Abul-Basher"
+__email__ = "arbasher@student.ubc.ca"
 __status__ = "Production"
 __description__ = "This file is the main entry to perform learning and prediction using leADS."
 
@@ -150,7 +150,7 @@ def __internal_args(parse_args):
     arg.extract_pf = False
     if parse_args.parse_pf:
         arg.extract_pf = True
-    arg.build_features = parse_args.build_features:
+    arg.build_features = parse_args.build_features
     arg.plot = parse_args.plot
     arg.pred_bags = parse_args.pred_bags
     arg.pred_labels = parse_args.pred_labels
