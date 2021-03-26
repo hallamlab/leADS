@@ -151,9 +151,8 @@ class leADS:
 
         argdict.update({'penalty': 'The penalty (aka regularization term): {0}'.format(self.penalty)})
         if self.penalty == "elasticnet":
-            argdict.update({'alpha-elastic': 'Constant controlling elastic term: {0}'.format(self.alpha_elastic)})
+            argdict.update({'alpha_elastic': 'Constant controlling the elastic term: {0}'.format(self.alpha_elastic)})
             argdict.update({'l1_ratio': 'The elastic net mixing parameter: {0}'.format(self.l1_ratio)})
-            argdict.update({'--alpha-elastic': 'Constant controlling elastic term: {0}'.format(self.alpha_elastic)})
         argdict.update({'fuse_weight': 'Adjust parameters using a provided '
                                        'similarity matrix? {0}'.format(self.fuse_weight)})
         if self.fuse_weight:
