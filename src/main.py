@@ -174,7 +174,7 @@ def parse_command_line():
     parser.add_argument('--display-interval', default=1, type=int,
                         help='display intervals. -1 means display per each iteration. (default value: 1).')
     parser.add_argument('--random_state', default=12345, type=int, help='Random seed. (default value: 12345).')
-    parser.add_argument('--num-jobs', type=int, default=1, help='Number of parallel workers. (default value: 2).')
+    parser.add_argument('--num-jobs', type=int, default=2, help='Number of parallel workers. (default value: 2).')
     parser.add_argument('--num-models', default=3, type=int, help='Number of models to generate. (default value: 3).')
     parser.add_argument('--batch', type=int, default=30, help='Batch size. (default value: 30).')
     parser.add_argument('--max-inner-iter', default=15, type=int,

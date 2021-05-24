@@ -443,7 +443,8 @@ class leADS:
         desc = '  \t\t>> Predictive uncertainty using {0}...'.format(self.acquisition_type)
         print(desc)
         logger.info(desc)
-        parallel = Parallel(n_jobs=self.num_jobs, verbose=max(0, self.verbose - 1))
+        parallel = Parallel(n_jobs=self.num_jobs, prefer="threads",
+                            verbose=max(0, self.verbose - 1))
         if self.acquisition_type == "entropy":
             models_entropy = np.array([np.mean(prob[samples_idx == idx], axis=(0)) for idx in np.unique(samples_idx)])
             H = self.__entropy(prob=models_entropy, model_idx=self.num_models - 1)
@@ -590,7 +591,8 @@ class leADS:
         prob = list()
         samples_idx = list()
         current_progress = 0
-        parallel = Parallel(n_jobs=self.num_jobs, verbose=max(0, self.verbose - 1))
+        parallel = Parallel(n_jobs=self.num_jobs, prefer="threads",
+                            verbose=max(0, self.verbose - 1))
         for model_idx in np.arange(self.num_models):
             samples = model_sample_idx[model_idx]
             X_tmp = X[samples]
@@ -919,7 +921,8 @@ class leADS:
         print('  \t\t>> Feed-Backward...')
         logger.info('\t\t>> Feed-Backward...')
 
-        parallel = Parallel(n_jobs=self.num_jobs, prefer="threads", verbose=max(0, self.verbose - 1))
+        parallel = Parallel(n_jobs=self.num_jobs, prefer="threads",
+                            verbose=max(0, self.verbose - 1))
 
         if self.learn_bags:
             # optimize U
@@ -1116,8 +1119,8 @@ class leADS:
         num_samples = X.shape[0]
         X_tmp = X.toarray()
         y_tmp = y.toarray()
-        parallel = Parallel(n_jobs=self.num_jobs, verbose=max(0, self.verbose - 1))
-
+        parallel = Parallel(n_jobs=self.num_jobs, prefer="threads",
+                            verbose=max(0, self.verbose - 1))
         if self.fit_intercept:
             X_tmp = np.concatenate((np.ones((num_samples, 1)), X_tmp), axis=1)
 
@@ -1560,7 +1563,8 @@ class leADS:
         prob_label_pred = np.zeros((self.num_models, X.shape[0], self.num_labels)) + EPSILON
         current_progress = 0
         total_progress = self.num_models * len(list_batches)
-        parallel = Parallel(n_jobs=self.num_jobs, verbose=max(0, self.verbose - 1))
+        parallel = Parallel(n_jobs=self.num_jobs, prefer="threads",
+                            verbose=max(0, self.verbose - 1))
         for model_idx in np.arange(self.num_models):
             results = parallel(delayed(self.__predict)(X[batch:batch + self.batch],
                                                        model_idx, batch_idx,
