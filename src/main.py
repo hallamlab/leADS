@@ -213,14 +213,14 @@ def parse_command_line():
                         help='The bags centroids file name. (default value: "biocyc_bag_centroid.npz")')
     parser.add_argument('--hin-name', type=str, default='hin.pkl',
                         help='The hin file name. (default value: "hin.pkl")')
-    parser.add_argument('--X-name', type=str, default='biocyc_Xe.pkl',
-                        help='The X file name. (default value: "biocyc_Xe.pkl")')
-    parser.add_argument('--y-name', type=str, default='biocyc_y.pkl',
-                        help='The y file name. (default value: "biocyc_y.pkl")')
-    parser.add_argument('--yB-name', type=str, default='biocyc_B.pkl',
-                        help='The bags file name. (default value: "biocyc_B.pkl")')
-    parser.add_argument('--samples-ids', type=str, default="biocyc_ids.pkl",
-                        help='The samples ids file name. (default value: "biocyc_ids.pkl")')
+    parser.add_argument('--X-name', type=str, default='temp_Xe.pkl',
+                        help='The X file name. (default value: "temp_Xe.pkl")')
+    parser.add_argument('--y-name', type=str, default='temp_y.pkl',
+                        help='The y file name. (default value: "temp_y.pkl")')
+    parser.add_argument('--yB-name', type=str, default='temp_B.pkl',
+                        help='The bags file name. (default value: "temp_B.pkl")')
+    parser.add_argument('--samples-ids', type=str, default="temp_ids.pkl",
+                        help='The samples ids file name. (default value: "temp_ids.pkl")')
     parser.add_argument('--bags-labels', type=str, default='biocyc_bag_pathway.pkl',
                         help='The bags to labels grouping file name. (default value: "biocyc_bag_pathway.pkl")')
     parser.add_argument('--similarity-name', type=str, default='pathway_similarity_cos.pkl',
@@ -229,8 +229,8 @@ def parse_command_line():
                         help='The file name to save an object. (default value: "temp")')
     parser.add_argument('--model-name', type=str, default='leADS',
                         help='The file name, excluding extension, to save an object. (default value: "leADS")')
-    parser.add_argument('--dsname', type=str, default='golden',
-                        help='The data name used for evaluation. (default value: "golden")')
+    parser.add_argument('--dsname', type=str, default='temp',
+                        help='The data name used for evaluation. (default value: "temp")')
 
     # Arguments for preprocessing dataset
     parser.add_argument('--preprocess-dataset', action='store_true', default=False,
