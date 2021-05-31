@@ -3,9 +3,3 @@ pandas
 scikit-learn
 scipy
 sklearn
-networkx
-community
-plotly
-squarify
-matplotlib
-altair
