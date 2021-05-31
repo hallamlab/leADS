@@ -118,7 +118,7 @@ def __preprocess(ec_dict, data_folder_path, result_folder_path, num_jobs=2):
     for sidx, sid in enumerate(sample_ids):
         create_remove_dir(folder_path=os.path.join(result_folder_path, sid))
         # input_path = os.path.join(lst_ipaths[sidx], 'ptools')
-        input_path = os.path.join(lst_ipaths[sidx], '1.0/input')
+        input_path = os.path.join(lst_ipaths[sidx], '1.0', 'input')
         for file_name in os.listdir(input_path):
             if file_name.endswith('.pf'):
                 input_file = os.path.join(input_path, file_name)
@@ -127,7 +127,7 @@ def __preprocess(ec_dict, data_folder_path, result_folder_path, num_jobs=2):
     lst_ipaths = sorted([os.path.join(result_folder_path, folder) for folder in os.listdir(result_folder_path)
                          if os.path.isdir(os.path.join(data_folder_path, folder))])
     print('\t>> Extracting input information from {0} files...'.format(len(lst_ipaths)))
-    parallel = Parallel(n_jobs=num_jobs, verbose=0)
+    parallel = Parallel(n_jobs=num_jobs, prefer="threads", verbose=0)
     results = parallel(delayed(__extract_input_from_pf_files)(item, idx, len(lst_ipaths))
                        for idx, item in enumerate(lst_ipaths))
     output = results

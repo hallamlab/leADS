@@ -20,12 +20,12 @@ from utility.parse_input import parse_files
 
 
 def __build_features(X, pathwat_dict, ec_dict, labels_components, node2idx_pathway2ec, path2vec_features, file_name,
-                     dspath, batch_size=100, num_jobs=1):
+                     dspath, batch_size=50, num_jobs=2):
     tmp = lil_matrix.copy(X)
     print('\t>> Build abundance and coverage features...')
     list_batches = np.arange(start=0, stop=tmp.shape[0], step=batch_size)
     total_progress = len(list_batches) * len(pathwat_dict.keys())
-    parallel = Parallel(n_jobs=num_jobs, verbose=0)
+    parallel = Parallel(n_jobs=num_jobs, prefer="threads", verbose=0)
     results = parallel(delayed(compute_abd_cov)(tmp[batch:batch + batch_size],
                                                 labels_components, pathwat_dict,
                                                 None, batch_idx, total_progress)
@@ -340,15 +340,15 @@ def __train(arg):
                               y_pred=y_pred, y_dict_ids=pathway_dict, y_common_name=pathway_common_names,
                               component_dict=ec_dict, labels_components=labels_components, y_pred_score=y_pred_score,
                               batch_size=arg.batch, num_jobs=arg.num_jobs, rsfolder=arg.rsfolder, rspath=arg.rspath,
-                              dspath=arg.dspath, file_name=arg.file_name + '_leads')
+                              dspath=arg.dspath, file_name=arg.file_name)
         else:
-            print('\t>> Storing predictions (label index) to: {0:s}'.format(arg.file_name + '_leads_y.pkl'))
-            save_data(data=y_pred, file_name=arg.file_name + "_leads_y.pkl", save_path=arg.dspath,
+            print('\t>> Storing predictions (label index) to: {0:s}'.format(arg.file_name + '_y.pkl'))
+            save_data(data=y_pred, file_name=arg.file_name + "_y.pkl", save_path=arg.dspath,
                       mode="wb", print_tag=False)
             if arg.pred_bags:
                 print('\t>> Storing predictions (bag index) to: {0:s}'.format(
-                    arg.file_name + '_leads_yBags.pkl'))
-                save_data(data=y_pred_Bags, file_name=arg.file_name + "_leads_yBags.pkl", save_path=arg.dspath,
+                    arg.file_name + '_yBags.pkl'))
+                save_data(data=y_pred_Bags, file_name=arg.file_name + "_yBags.pkl", save_path=arg.dspath,
                           mode="wb", print_tag=False)
 
 

@@ -140,8 +140,8 @@ def __synthesize_report(X, sample_ids, y_pred_score, y_pred, y_dict_ids, y_commo
 
 
 def synthesize_report(X, sample_ids, y_pred, y_dict_ids, y_common_name, component_dict, labels_components,
-                      y_pred_score=None,
-                      batch_size=30, num_jobs=1, rsfolder="Results", rspath="../.", dspath="../.", file_name='labels'):
+                      y_pred_score=None, batch_size=30, num_jobs=1, rsfolder="Results",
+                      rspath="../.", dspath="../.", file_name='labels'):
     if y_pred is None:
         raise Exception("Please provide two matrices as numpy matrix format: "
                         "(num_samples, num_labels), representing pathway scores "
@@ -150,7 +150,7 @@ def synthesize_report(X, sample_ids, y_pred, y_dict_ids, y_common_name, componen
     num_samples = len(sample_ids)
     main_folder_path = os.path.join(rspath, rsfolder)
     list_batches = np.arange(start=0, stop=num_samples, step=batch_size)
-    parallel = Parallel(n_jobs=num_jobs, verbose=0)
+    parallel = Parallel(n_jobs=num_jobs, prefer="threads", verbose=0)
 
     # Delete the previous main folder and recreate a new one
     create_remove_dir(folder_path=main_folder_path)

@@ -87,9 +87,6 @@ def __internal_args(parse_args):
     ###***************************     Preprocessing arguments      ***************************###
 
     arg.preprocess_dataset = parse_args.preprocess_dataset
-    arg.test_size = parse_args.test_size
-    if arg.test_size < 0 or arg.test_size > 1:
-        arg.test_size = 0
     arg.binarize_input_feature = parse_args.binarize
     arg.normalize_input_feature = parse_args.normalize
     arg.use_external_features = parse_args.use_external_features
@@ -151,7 +148,6 @@ def __internal_args(parse_args):
     if parse_args.parse_pf:
         arg.extract_pf = True
     arg.build_features = parse_args.build_features
-    arg.plot = parse_args.plot
     arg.pred_bags = parse_args.pred_bags
     arg.pred_labels = parse_args.pred_labels
     arg.build_up = parse_args.build_up
@@ -173,15 +169,15 @@ def parse_command_line():
 
     parser.add_argument('--display-interval', default=1, type=int,
                         help='display intervals. -1 means display per each iteration. (default value: 1).')
-    parser.add_argument('--random_state', default=12345, type=int, help='Random seed. (default value: 12345).')
+    parser.add_argument('--random-state', default=12345, type=int, help='Random seed. (default value: 12345).')
     parser.add_argument('--num-jobs', type=int, default=2, help='Number of parallel workers. (default value: 2).')
-    parser.add_argument('--num-models', default=3, type=int, help='Number of models to generate. (default value: 3).')
-    parser.add_argument('--batch', type=int, default=30, help='Batch size. (default value: 30).')
-    parser.add_argument('--max-inner-iter', default=15, type=int,
+    parser.add_argument('--num-models', default=10, type=int, help='Number of models to generate. (default value: 10).')
+    parser.add_argument('--batch', type=int, default=50, help='Batch size. (default value: 50).')
+    parser.add_argument('--max-inner-iter', default=100, type=int,
                         help='Number of inner iteration for logistic regression. '
-                             '10. (default value: 15)')
-    parser.add_argument('--num-epochs', default=3, type=int,
-                        help='Number of epochs over the training set. (default value: 3).')
+                             '10. (default value: 100)')
+    parser.add_argument('--num-epochs', default=10, type=int,
+                        help='Number of epochs over the training set. (default value: 10).')
 
     # Arguments for path--build-features
     parser.add_argument('--ospath', default=fph.OBJECT_PATH, type=str,
@@ -191,8 +187,8 @@ def parse_command_line():
     parser.add_argument('--dspath', default=fph.DATASET_PATH, type=str,
                         help='The path to the dataset after the samples are processed. '
                              'The default is set to dataset folder outside the source code.')
-    parser.add_argument('--dsfolder', default="SAG", type=str,
-                        help='The dataset folder name. The default is set to SAG.')
+    parser.add_argument('--dsfolder', default="temp", type=str,
+                        help='The dataset folder name. The default is set to temp.')
     parser.add_argument('--mdpath', default=fph.MODEL_PATH, type=str,
                         help='The path to the output models. The default is set to '
                              'train folder outside the source code.')
@@ -211,8 +207,8 @@ def parse_command_line():
                         help='The pathway2ec association matrix file name. (default value: "pathway2ec.pkl")')
     parser.add_argument('--pathway2ec-idx-name', type=str, default='pathway2ec_idx.pkl',
                         help='The pathway2ec association indices file name. (default value: "pathway2ec_idx.pkl")')
-    parser.add_argument('--features-name', type=str, default='biocyc_soap_features.pkl',
-                        help='The features file name. (default value: "biocyc_soap_features.pkl")')
+    parser.add_argument('--features-name', type=str, default='pathway2vec_embeddings.npz',
+                        help='The features file name. (default value: "pathway2vec_embeddings.npz")')
     parser.add_argument('--centroids', type=str, default='biocyc_bag_centroid.npz',
                         help='The bags centroids file name. (default value: "biocyc_bag_centroid.npz")')
     parser.add_argument('--hin-name', type=str, default='hin.pkl',
@@ -223,14 +219,14 @@ def parse_command_line():
                         help='The y file name. (default value: "biocyc_y.pkl")')
     parser.add_argument('--yB-name', type=str, default='biocyc_B.pkl',
                         help='The bags file name. (default value: "biocyc_B.pkl")')
-    parser.add_argument('--samples-ids', type=str, default=None,
-                        help='The samples ids file name. (default value: "leADS_samples.pkl")')
+    parser.add_argument('--samples-ids', type=str, default="biocyc_ids.pkl",
+                        help='The samples ids file name. (default value: "biocyc_ids.pkl")')
     parser.add_argument('--bags-labels', type=str, default='biocyc_bag_pathway.pkl',
                         help='The bags to labels grouping file name. (default value: "biocyc_bag_pathway.pkl")')
     parser.add_argument('--similarity-name', type=str, default='pathway_similarity_cos.pkl',
                         help='The labels similarity file name. (default value: "pathway_similarity_cos.pkl")')
-    parser.add_argument('--file-name', type=str, default='biocyc',
-                        help='The file name to save an object. (default value: "biocyc")')
+    parser.add_argument('--file-name', type=str, default='temp',
+                        help='The file name to save an object. (default value: "temp")')
     parser.add_argument('--model-name', type=str, default='leADS',
                         help='The file name, excluding extension, to save an object. (default value: "leADS")')
     parser.add_argument('--dsname', type=str, default='golden',
@@ -239,8 +235,6 @@ def parse_command_line():
     # Arguments for preprocessing dataset
     parser.add_argument('--preprocess-dataset', action='store_true', default=False,
                         help='Preprocess biocyc collection.  (default value: False).')
-    parser.add_argument('--test-size', default=0.2, type=float,
-                        help='The dataset test size between 0.0 and 1.0. (default value: 0.2)')
 
     # Arguments for training and evaluation
     parser.add_argument('--train', action='store_true', default=False,
@@ -257,9 +251,6 @@ def parse_command_line():
                         help='Whether to parse Pathologic format file (pf) from a folder (default value: False).')
     parser.add_argument('--build-features', action='store_true', default=False,
                         help='Whether to construct features (default value: True).')
-    parser.add_argument('--plot', action='store_true', default=False,
-                        help='Whether to produce various plots from predicted outputs. '
-                             '(default value: False).')
     parser.add_argument("--alpha", type=float, default=16,
                         help="A hyper-parameter for controlling bags centroids. (default value: 16).")
     parser.add_argument('--binarize', action='store_true', default=False,
@@ -280,12 +271,12 @@ def parse_command_line():
                         help='Train based on selected sample ids. (default value: False)')
     parser.add_argument('--ssample-input-size', default=0.7, type=float,
                         help='The size of subsampled input. (default value: 0.7)')
-    parser.add_argument('--ssample-label-size', default=50, type=int,
-                        help='The size of subsampled labels. (default value: 50).')
+    parser.add_argument('--ssample-label-size', default=2000, type=int,
+                        help='The size of subsampled labels. (default value: 2000).')
     parser.add_argument('--calc-ads', action='store_true', default=False,
                         help='Whether to subsample dataset using active dataset subsampling (ADS). (default value: False).')
-    parser.add_argument('--ads-percent', type=float, default=0.3,
-                        help='Active dataset subsampling size (within [0, 1]). (default value: 0.3).')
+    parser.add_argument('--ads-percent', type=float, default=0.7,
+                        help='Active dataset subsampling size (within [0, 1]). (default value: 0.7).')
     parser.add_argument('--tol-labels-iter', type=int, default=10,
                         help='Number of iteration to perform for subsampling labels if labels '
                              'in the samples were below expected number of labels size. '
@@ -293,8 +284,8 @@ def parse_command_line():
     parser.add_argument('--advanced-subsampling', action='store_true', default=False,
                         help='Whether to apply advanced subsampling dataset based on class labels. '
                              '(default value: False).')
-    parser.add_argument('--calc-subsample-size', type=int, default=50,
-                        help='Compute loss on selected samples. (default value: 50).')
+    parser.add_argument('--calc-subsample-size', type=int, default=1000,
+                        help='Compute loss on selected samples. (default value: 1000).')
     parser.add_argument("--calc-label-cost", action='store_false', default=True,
                         help="Compute label cost, i.e., cost of labels. (default value: True).")
     parser.add_argument("--calc-bag-cost", action='store_true', default=False,
@@ -311,8 +302,8 @@ def parse_command_line():
                              '(default value: "psp")')
     parser.add_argument('--top-k', type=int, default=50,
                         help='Top k labels to be considered for variation ratio or psp acquisition functions. (default value: 50).')
-    parser.add_argument('--psp-k', default=10, type=int,
-                        help='K value for the propensity score. (default value: 10).')
+    parser.add_argument('--psp-k', default=50, type=int,
+                        help='K value for the propensity score. (default value: 50).')
     parser.add_argument('--label-bag-sim', action='store_true', default=False,
                         help='Whether to apply similarity constraint among labels within a bag. (default value: False).')
     parser.add_argument('--label-closeness-sim', action='store_true', default=False,
