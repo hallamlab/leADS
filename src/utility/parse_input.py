@@ -116,8 +116,7 @@ def __preprocess(ec_dict, data_folder_path, result_folder_path, num_jobs=2):
     sample_ids = [os.path.split(opath)[-1] for opath in lst_ipaths]
     for sidx, sid in enumerate(sample_ids):
         create_remove_dir(folder_path=os.path.join(result_folder_path, sid))
-        # input_path = os.path.join(lst_ipaths[sidx], 'ptools')
-        input_path = os.path.join(lst_ipaths[sidx], '1.0', 'input')
+        input_path = lst_ipaths[sidx]
         for file_name in os.listdir(input_path):
             if file_name.endswith('.pf'):
                 input_file = os.path.join(input_path, file_name)
