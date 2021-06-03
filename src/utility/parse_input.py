@@ -2,12 +2,13 @@
 This file preprocesses the input data in PathoLogic File Format (.pf).
 '''
 
-import numpy as np
 import os
 import os.path
 import shutil
 import sys
 from collections import OrderedDict
+
+import numpy as np
 from joblib import Parallel, delayed
 from scipy.sparse import lil_matrix
 
@@ -153,8 +154,8 @@ def __preprocess(ec_dict, data_folder_path, result_folder_path, num_jobs=2):
 
 # ---------------------------------------------------------------------------------------
 
-def parse_files(ec_dict, input_folder, rsfolder, rspath, num_jobs):
-    X, sample_ids = __preprocess(ec_dict=ec_dict, data_folder_path=input_folder,
-                                 result_folder_path=os.path.join(rspath, rsfolder),
+def parse_files(ec_dict, ds_folder, dspath, rspath, num_jobs):
+    X, sample_ids = __preprocess(ec_dict=ec_dict, data_folder_path=os.path.join(dspath, ds_folder),
+                                 result_folder_path=os.path.join(rspath, ds_folder),
                                  num_jobs=num_jobs)
     return lil_matrix(X), sample_ids

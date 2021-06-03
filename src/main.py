@@ -10,7 +10,8 @@ __description__ = "This file is the main entry to perform learning and predictio
 
 import datetime
 import json
-import os, sys
+import os
+import sys
 import textwrap
 from argparse import ArgumentParser
 
@@ -20,7 +21,7 @@ from utility.arguments import Arguments
 
 
 def __print_header():
-    if sys.platform.startswith('win'): 
+    if sys.platform.startswith('win'):
         os.system("cls")
     else:
         os.system("clear")
@@ -66,7 +67,6 @@ def __internal_args(parse_args):
     arg.dsfolder = parse_args.dsfolder
     arg.mdpath = parse_args.mdpath
     arg.rspath = parse_args.rspath
-    arg.rsfolder = parse_args.rsfolder
     arg.logpath = parse_args.logpath
 
     ###***************************          File arguments          ***************************###
@@ -90,9 +90,15 @@ def __internal_args(parse_args):
     ###***************************     Preprocessing arguments      ***************************###
 
     arg.preprocess_dataset = parse_args.preprocess_dataset
-    arg.binarize_input_feature = parse_args.binarize
+    arg.binarize_input_feature = True
+    if parse_args.no_binarize:
+        arg.binarize_input_feature = False
     arg.normalize_input_feature = parse_args.normalize
-    arg.use_external_features = parse_args.use_external_features
+    if arg.normalize_input_feature:
+        arg.binarize_input_feature = False
+    arg.use_external_features = True
+    if parse_args.no_external_features:
+        arg.use_external_features = False
     arg.cutting_point = parse_args.cutting_point
 
     ###***************************        Training arguments        ***************************###
@@ -150,7 +156,6 @@ def __internal_args(parse_args):
     arg.extract_pf = False
     if parse_args.parse_pf:
         arg.extract_pf = True
-    arg.build_features = parse_args.build_features
     arg.pred_bags = parse_args.pred_bags
     arg.pred_labels = parse_args.pred_labels
     arg.build_up = parse_args.build_up
@@ -198,8 +203,6 @@ def parse_command_line():
     parser.add_argument('--rspath', default=fph.RESULT_PATH, type=str,
                         help='The path to the results. The default is set to result '
                              'folder outside the source code.')
-    parser.add_argument('--rsfolder', default="Prediction_leADS", type=str,
-                        help='The result folder name. The default is set to Prediction_leADS.')
     parser.add_argument('--logpath', default=fph.LOG_PATH, type=str,
                         help='The path to the log directory.')
 
@@ -252,15 +255,13 @@ def parse_command_line():
                              '(default value: False).')
     parser.add_argument('--parse-pf', action='store_true', default=False,
                         help='Whether to parse Pathologic format file (pf) from a folder (default value: False).')
-    parser.add_argument('--build-features', action='store_true', default=False,
-                        help='Whether to construct features (default value: True).')
     parser.add_argument("--alpha", type=float, default=16,
                         help="A hyper-parameter for controlling bags centroids. (default value: 16).")
-    parser.add_argument('--binarize', action='store_true', default=False,
+    parser.add_argument('--no-binarize', action='store_true', default=False,
                         help='Whether binarize data (set feature values to 0 or 1). (default value: False).')
     parser.add_argument('--normalize', action='store_true', default=False,
                         help='Whether to normalize data. (default value: False).')
-    parser.add_argument('--use-external-features', action='store_true', default=False,
+    parser.add_argument('--no-external-features', action='store_true', default=False,
                         help='Whether to use external features that are included in data. '
                              '(default value: False).')
     parser.add_argument('--cutting-point', type=int, default=3650,
