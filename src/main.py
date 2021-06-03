@@ -1,6 +1,6 @@
 __author__ = "Abdurrahman Abul-Basher"
-__date__ = '16/09/2020'
-__copyright__ = "Copyright 2020, The Hallam Lab"
+__date__ = '02/06/2021'
+__copyright__ = "Copyright 2021, The Hallam Lab"
 __license__ = "GPL"
 __version__ = "1.0"
 __maintainer__ = "Abdurrahman Abul-Basher"
@@ -166,7 +166,6 @@ def __internal_args(parse_args):
     arg.estimate_prob = parse_args.estimate_prob
     arg.apply_tcriterion = parse_args.apply_tcriterion
     arg.adaptive_beta = parse_args.adaptive_beta
-    arg.psp_k = parse_args.psp_k
     return arg
 
 
@@ -235,8 +234,8 @@ def parse_command_line():
                         help='The file name to save an object. (default value: "temp")')
     parser.add_argument('--model-name', type=str, default='leADS',
                         help='The file name, excluding extension, to save an object. (default value: "leADS")')
-    parser.add_argument('--dsname', type=str, default='temp',
-                        help='The data name used for evaluation. (default value: "temp")')
+    parser.add_argument('--dsname', type=str, default='golden',
+                        help='The data name used for evaluation. (default value: "golden ")')
 
     # Arguments for preprocessing dataset
     parser.add_argument('--preprocess-dataset', action='store_true', default=False,
@@ -306,8 +305,6 @@ def parse_command_line():
                              '(default value: "psp")')
     parser.add_argument('--top-k', type=int, default=50,
                         help='Top k labels to be considered for variation ratio or psp acquisition functions. (default value: 50).')
-    parser.add_argument('--psp-k', default=50, type=int,
-                        help='K value for the propensity score. (default value: 50).')
     parser.add_argument('--label-bag-sim', action='store_true', default=False,
                         help='Whether to apply similarity constraint among labels within a bag. (default value: False).')
     parser.add_argument('--label-closeness-sim', action='store_true', default=False,

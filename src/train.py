@@ -228,14 +228,14 @@ def __train(arg):
         file_name = arg.file_name + '_scores.txt'
         if arg.pred_bags:
             score(y_true=y_Bags.toarray(), y_pred=y_pred_Bags.toarray(), item_lst=['biocyc_bags'],
-                  six_db=False, top_k=arg.psp_k, mode='a', file_name=file_name, save_path=arg.rspath)
+                  six_db=False, top_k=arg.top_k, mode='a', file_name=file_name, save_path=arg.rspath)
         if arg.pred_labels:
             if arg.dsname == 'golden':
                 score(y_true=y.toarray(), y_pred=y_pred.toarray(), item_lst=[arg.dsname], six_db=True,
-                      top_k=arg.psp_k, mode='a', file_name=file_name, save_path=arg.rspath)
+                      top_k=arg.top_k, mode='a', file_name=file_name, save_path=arg.rspath)
             else:
                 score(y_true=y.toarray(), y_pred=y_pred.toarray(), item_lst=[arg.dsname], six_db=False,
-                      top_k=arg.psp_k, mode='a', file_name=file_name, save_path=arg.rspath)
+                      top_k=arg.top_k, mode='a', file_name=file_name, save_path=arg.rspath)
 
     ##########################################################################################################
     ######################                            PREDICT                           ######################
@@ -264,8 +264,7 @@ def __train(arg):
             ec_dict = dict((idx, ec_dict[tmp.index(ec)]) for idx, ec in enumerate(pathway2ec_idx))
             if arg.extract_pf:
                 X, sample_ids = parse_files(ec_dict=ec_dict, ds_folder=arg.dsfolder, dspath=arg.dspath,
-                                            rspath=arg.rspath,
-                                            num_jobs=arg.num_jobs)
+                                            rspath=arg.rspath, num_jobs=arg.num_jobs)
                 print('\t>> Storing X and sample_ids...')
                 save_data(data=X, file_name=arg.file_name + '_X.pkl', save_path=arg.dspath,
                           tag='the pf dataset (X)', mode='w+b', print_tag=False)
@@ -332,7 +331,7 @@ def __train(arg):
             X = tmp
             sample_ids = np.arange(X.shape[0])
             if arg.extract_pf:
-                sample_ids = arg.file_name + "_ids.pkl"
+                sample_ids = load_data(file_name=arg.file_name + "_ids.pkl", load_path=arg.dspath, tag="samples ids")
             else:
                 if arg.samples_ids is not None:
                     if arg.samples_ids in os.listdir(arg.dspath):
