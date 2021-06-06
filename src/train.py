@@ -50,26 +50,26 @@ def __build_features(X, pathwat_dict, ec_dict, labels_components, node2idx_pathw
               tag="transformed instances to ec features")
     X = lil_matrix(hstack((tmp, ec_features)))
     save_data(data=X, file_name=file_name + "_Xe.pkl", save_path=dspath, mode="wb",
-              tag="concatenated ec features with instances")
+              tag="concatenated ECs and embeddings with instances")
     X = lil_matrix(hstack((tmp, abd)))
     save_data(data=X, file_name=file_name + "_Xa.pkl", save_path=dspath, mode="wb",
-              tag="concatenated abundance features with instances")
+              tag="concatenated ECs and abundance features with instances")
     X = lil_matrix(hstack((tmp, cov)))
     save_data(data=X, file_name=file_name + "_Xc.pkl", save_path=dspath, mode="wb",
-              tag="concatenated coverage features with instances")
+              tag="concatenated ECs and coverage features with instances")
     X = lil_matrix(hstack((tmp, ec_features)))
     X = lil_matrix(hstack((X, abd)))
     save_data(data=X, file_name=file_name + "_Xea.pkl", save_path=dspath, mode="wb",
-              tag="concatenated ec and abundance features with instances")
+              tag="concatenated ECs, embeddings, and abundance features with instances")
     X = lil_matrix(hstack((tmp, ec_features)))
     X = lil_matrix(hstack((X, cov)))
     save_data(data=X, file_name=file_name + "_Xec.pkl", save_path=dspath, mode="wb",
-              tag="concatenated ec and coverage features with instances")
+              tag="concatenated ECs, embeddings, and coverage features with instances")
     X = lil_matrix(hstack((tmp, ec_features)))
     X = lil_matrix(hstack((X, abd)))
     X = lil_matrix(hstack((X, cov)))
     save_data(data=X, file_name=file_name + "_Xm.pkl", save_path=dspath, mode="wb",
-              tag="concatenated ec, abundance, and coverage features features with instances")
+              tag="concatenated ECs, embeddings, abundance, and coverage features features with instances")
 
 
 ###***************************        Private Main Entry        ***************************###
