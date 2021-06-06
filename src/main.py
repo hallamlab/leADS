@@ -6,7 +6,7 @@ __version__ = "1.0"
 __maintainer__ = "Abdurrahman Abul-Basher"
 __email__ = "arbasher@student.ubc.ca"
 __status__ = "Production"
-__description__ = "This file is the main entry to perform learning and prediction using leADS."
+__description__ = "This file is the main entry to perform pathway prediction and learning using leADS."
 
 import datetime
 import json
