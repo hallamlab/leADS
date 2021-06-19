@@ -216,14 +216,12 @@ def __train(arg):
 
         # labels prediction score
         y_pred_Bags, y_pred = model.predict(X=X, bags_labels=bags_labels, label_features=label_features,
-                                            centroids=centroids,
-                                            estimate_prob=arg.estimate_prob, pred_bags=arg.pred_bags,
-                                            pred_labels=arg.pred_labels,
-                                            build_up=arg.build_up, pref_rank=arg.pref_rank, top_k_rank=arg.top_k_rank,
-                                            subsample_labels_size=arg.ssample_label_size, soft_voting=arg.soft_voting,
-                                            apply_t_criterion=arg.apply_tcriterion, adaptive_beta=arg.adaptive_beta,
-                                            decision_threshold=arg.decision_threshold, batch_size=arg.batch,
-                                            num_jobs=arg.num_jobs)
+                                            centroids=centroids, estimate_prob=False, pred_bags=arg.pred_bags, 
+                                            pred_labels=arg.pred_labels, build_up=arg.build_up, pref_rank=arg.pref_rank, 
+                                            top_k_rank=arg.top_k_rank, subsample_labels_size=arg.ssample_label_size, 
+                                            soft_voting=arg.soft_voting, apply_t_criterion=arg.apply_tcriterion, 
+                                            adaptive_beta=arg.adaptive_beta, decision_threshold=arg.decision_threshold, 
+                                            batch_size=arg.batch, num_jobs=arg.num_jobs)
 
         file_name = arg.file_name + '_scores.txt'
         if arg.pred_bags:
@@ -256,7 +254,7 @@ def __train(arg):
             del data_object
             pathway_dict = dict((idx, id) for id, idx in pathway_dict.items())
             ec_dict = dict((idx, id) for id, idx in ec_dict.items())
-            labels_components = load_data(file_name=arg.pathway2ec_name, load_path=arg.ospath, tag='M')
+            labels_components = load_data(file_name=arg.pathway2ec_name, load_path=arg.ospath, tag='pathway2ec')
             print('\t>> Loading label to component mapping file object...')
             pathway2ec_idx = load_data(file_name=arg.pathway2ec_idx_name, load_path=arg.ospath, print_tag=False)
             pathway2ec_idx = list(pathway2ec_idx)
@@ -307,13 +305,12 @@ def __train(arg):
 
         # predict
         y_pred_Bags, y_pred = model.predict(X=X, bags_labels=bags_labels, label_features=label_features,
-                                            centroids=centroids,
-                                            estimate_prob=False, pred_bags=arg.pred_bags, pred_labels=arg.pred_labels,
-                                            build_up=arg.build_up, pref_rank=arg.pref_rank, top_k_rank=arg.top_k_rank,
-                                            subsample_labels_size=arg.ssample_label_size, soft_voting=arg.soft_voting,
-                                            apply_t_criterion=arg.apply_tcriterion, adaptive_beta=arg.adaptive_beta,
-                                            decision_threshold=arg.decision_threshold, batch_size=arg.batch,
-                                            num_jobs=arg.num_jobs)
+                                            centroids=centroids, estimate_prob=False, pred_bags=arg.pred_bags, 
+                                            pred_labels=arg.pred_labels, build_up=arg.build_up, pref_rank=arg.pref_rank, 
+                                            top_k_rank=arg.top_k_rank, subsample_labels_size=arg.ssample_label_size,
+                                            soft_voting=arg.soft_voting, apply_t_criterion=arg.apply_tcriterion, 
+                                            adaptive_beta=arg.adaptive_beta, decision_threshold=arg.decision_threshold, 
+                                            batch_size=arg.batch, num_jobs=arg.num_jobs)
         # labels prediction score
         y_pred_Bags_score, y_pred_score = model.predict(X=X, bags_labels=bags_labels, label_features=label_features,
                                                         centroids=centroids, estimate_prob=True,

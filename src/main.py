@@ -304,7 +304,7 @@ def parse_command_line():
                         help='The acquisition function for estimating the predictive uncertainty. '
                              '(default value: "psp")')
     parser.add_argument('--top-k', type=int, default=50,
-                        help='Top k labels to be considered for variation ratio or psp acquisition functions. (default value: 50).')
+                        help='Top k labels to be considered for variation ratios or psp functions. (default value: 50).')
     parser.add_argument('--label-bag-sim', action='store_true', default=False,
                         help='Whether to apply similarity constraint among labels within a bag. (default value: False).')
     parser.add_argument('--label-closeness-sim', action='store_true', default=False,
