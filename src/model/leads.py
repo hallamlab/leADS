@@ -1348,6 +1348,7 @@ class leADS:
                     model_sample_idx = [np.random.choice(a=sample_idx, size=sub_sampled_size, replace=False) for m_idx
                                         in np.arange(self.num_models)]
                 else:
+                    # discard few subsampled examples
                     for m_idx in np.arange(self.num_models):
                         tmp = np.array([s for s in sample_idx if s not in model_sample_idx[m_idx]])
                         if len(tmp) - len(model_sample_idx[m_idx]) > 0:
