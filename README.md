@@ -10,9 +10,7 @@ See tutorials on the [GitHub wiki](https://github.com/hallamlab/leADS/wiki) page
 
 If you find *leADS* useful in your research, please consider citing the following paper:
 
-- M. A. Basher, Abdur Rahman and Hallam, Steven
-  J.. **["Multi-label pathway prediction based on active dataset subsampling."](https://www.biorxiv.org/content/10.1101/2020.09.14.297424v1)**
-  , bioRxiv (2020).
+- M. A. Basher, Abdur Rahman and Nallan, Aditi N. and McLaughlin, Ryan J. and Anstett, Julia and Hallam, Steven J.. **["leADS: improved metabolic pathway inference based on active dataset subsampling"](https://doi.org/10.1101/2020.09.14.297424)**, bioRxiv (2021).
 
 ## Contact
 
