@@ -10,10 +10,9 @@ import traceback
 
 import numpy as np
 from joblib import Parallel, delayed
+from model.leads import leADS
 from scipy.sparse import lil_matrix, hstack
 from sklearn import preprocessing
-
-from model.leads import leADS
 from utility.access_file import load_data, load_item_features, save_data
 from utility.model_utils import score, synthesize_report, compute_abd_cov
 from utility.parse_input import parse_files
@@ -216,11 +215,11 @@ def __train(arg):
 
         # labels prediction score
         y_pred_Bags, y_pred = model.predict(X=X, bags_labels=bags_labels, label_features=label_features,
-                                            centroids=centroids, estimate_prob=False, pred_bags=arg.pred_bags, 
-                                            pred_labels=arg.pred_labels, build_up=arg.build_up, pref_rank=arg.pref_rank, 
-                                            top_k_rank=arg.top_k_rank, subsample_labels_size=arg.ssample_label_size, 
-                                            soft_voting=arg.soft_voting, apply_t_criterion=arg.apply_tcriterion, 
-                                            adaptive_beta=arg.adaptive_beta, decision_threshold=arg.decision_threshold, 
+                                            centroids=centroids, estimate_prob=False, pred_bags=arg.pred_bags,
+                                            pred_labels=arg.pred_labels, build_up=arg.build_up, pref_rank=arg.pref_rank,
+                                            top_k_rank=arg.top_k_rank, subsample_labels_size=arg.ssample_label_size,
+                                            soft_voting=arg.soft_voting, apply_t_criterion=arg.apply_tcriterion,
+                                            adaptive_beta=arg.adaptive_beta, decision_threshold=arg.decision_threshold,
                                             batch_size=arg.batch, num_jobs=arg.num_jobs)
 
         file_name = arg.file_name + '_scores.txt'
@@ -305,26 +304,26 @@ def __train(arg):
 
         # predict
         y_pred_Bags, y_pred = model.predict(X=X, bags_labels=bags_labels, label_features=label_features,
-                                            centroids=centroids, estimate_prob=False, pred_bags=arg.pred_bags, 
-                                            pred_labels=arg.pred_labels, build_up=arg.build_up, pref_rank=arg.pref_rank, 
+                                            centroids=centroids, estimate_prob=False, pred_bags=arg.pred_bags,
+                                            pred_labels=arg.pred_labels, build_up=arg.build_up, pref_rank=arg.pref_rank,
                                             top_k_rank=arg.top_k_rank, subsample_labels_size=arg.ssample_label_size,
-                                            soft_voting=arg.soft_voting, apply_t_criterion=arg.apply_tcriterion, 
-                                            adaptive_beta=arg.adaptive_beta, decision_threshold=arg.decision_threshold, 
+                                            soft_voting=arg.soft_voting, apply_t_criterion=arg.apply_tcriterion,
+                                            adaptive_beta=arg.adaptive_beta, decision_threshold=arg.decision_threshold,
                                             batch_size=arg.batch, num_jobs=arg.num_jobs)
-        # labels prediction score
-        y_pred_Bags_score, y_pred_score = model.predict(X=X, bags_labels=bags_labels, label_features=label_features,
-                                                        centroids=centroids, estimate_prob=True,
-                                                        pred_bags=arg.pred_bags,
-                                                        pred_labels=arg.pred_labels, build_up=arg.build_up,
-                                                        pref_rank=arg.pref_rank, top_k_rank=arg.top_k_rank,
-                                                        subsample_labels_size=arg.ssample_label_size,
-                                                        soft_voting=arg.soft_voting,
-                                                        apply_t_criterion=arg.apply_tcriterion,
-                                                        adaptive_beta=arg.adaptive_beta,
-                                                        decision_threshold=arg.decision_threshold,
-                                                        batch_size=arg.batch, num_jobs=arg.num_jobs)
         if arg.pathway_report:
             print('\t>> Synthesizing pathway reports...')
+            # labels prediction score
+            y_pred_Bags_score, y_pred_score = model.predict(X=X, bags_labels=bags_labels, label_features=label_features,
+                                                            centroids=centroids, estimate_prob=True,
+                                                            pred_bags=arg.pred_bags,
+                                                            pred_labels=arg.pred_labels, build_up=arg.build_up,
+                                                            pref_rank=arg.pref_rank, top_k_rank=arg.top_k_rank,
+                                                            subsample_labels_size=arg.ssample_label_size,
+                                                            soft_voting=arg.soft_voting,
+                                                            apply_t_criterion=arg.apply_tcriterion,
+                                                            adaptive_beta=arg.adaptive_beta,
+                                                            decision_threshold=arg.decision_threshold,
+                                                            batch_size=arg.batch, num_jobs=arg.num_jobs)
             X = tmp
             sample_ids = np.arange(X.shape[0])
             if arg.extract_pf:
