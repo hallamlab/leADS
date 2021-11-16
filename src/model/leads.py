@@ -1350,11 +1350,14 @@ class leADS:
                 else:
                     # discard few subsampled examples
                     for m_idx in np.arange(self.num_models):
-                        tmp = np.array([s for s in sample_idx if s not in model_sample_idx[m_idx]])
-                        if len(tmp) - len(model_sample_idx[m_idx]) > 0:
-                            if len(tmp) - sub_sampled_size > 0:
-                                tmp = np.random.choice(a=tmp, size=sub_sampled_size, replace=False)
-                        model_sample_idx[m_idx] = np.append(model_sample_idx[m_idx], tmp)[:sub_sampled_size]
+                        disc = model_sample_idx[m_idx]
+                        gamma = 0.9
+                        gamma_size = int(gamma * len(disc))
+                        disc = disc[:gamma_size]
+                        tmp = np.array([s for s in sample_idx if s not in disc])
+                        if len(tmp) - sub_sampled_size > 0:
+                            tmp = np.random.choice(a=tmp, size=sub_sampled_size, replace=False)
+                        model_sample_idx[m_idx] = np.append(disc, tmp)[:sub_sampled_size]
 
             if self.learning_type == "optimal":
                 # usual optimization technique
